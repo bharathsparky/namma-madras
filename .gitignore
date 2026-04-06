@@ -9,6 +9,10 @@ dist/
 web-build/
 expo-env.d.ts
 
+# Android Play upload signing (never commit)
+android/keystore.properties
+android/app/upload-keystore.jks
+
 # Native
 .kotlin/
 *.orig.*
@@ -21,16 +25,23 @@ expo-env.d.ts
 # Metro
 .metro-health-check*
 
+# Local installable builds (rename/copy from Gradle output)
+*.apk
+
 # debug
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+
+# IDE
+.cursor/
 
 # macOS
 .DS_Store
 *.pem
 
 # local env files
+.env
 .env*.local
 
 # typescript

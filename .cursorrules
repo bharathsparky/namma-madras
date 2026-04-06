@@ -1,0 +1,41 @@
+# Namma Madras — Cursor Rules
+
+## Stack
+- React Native with Expo SDK 54+
+- Expo Router (file-based routing — use /app directory)
+- TypeScript strict mode throughout (strict: true in tsconfig)
+- NativeWind v4 for styling (Tailwind class names in React Native)
+- Zustand for global state management
+- expo-sqlite (v16+) for all local data access
+- expo-localization for device locale detection
+- i18next + react-i18next for all UI strings
+
+## Absolute Rules
+- NEVER hardcode user-facing strings in components. ALL strings go in /i18n/ta.json and /i18n/en.json.
+- NEVER fetch place data from the network in any user-facing component or screen. All place data comes from expo-sqlite only.
+- NEVER use AsyncStorage for place data, category data, or emergency contacts. SQLite only (AsyncStorage allowed for small prefs: language, onboarding flags).
+- EVERY component that renders place or UI text must accept lang: 'ta' | 'en' prop OR read from Zustand language store.
+- Emergency contacts screen must render with ZERO network calls and ZERO async operations beyond SQLite read (sync getAllSync after DB is ready).
+
+## File Structure
+/app              — Expo Router routes (tabs, detail screens, onboarding)
+/components       — Shared UI components (PlaceCard, StatusChip, etc.)
+/db               — expo-sqlite helpers, queries, migrations
+/stores           — Zustand stores (language, persona, savedPlaces, location)
+/i18n             — Translation files: ta.json, en.json
+/data             — seed SQL fragments (seedSQL.ts)
+/assets           — fonts via @expo-google-fonts
+
+## Data Access Pattern
+- db/queries.ts — all SQLite access; components call query functions, never raw SQL in JSX.
+
+## Styling
+- Use NativeWind classes everywhere.
+- Minimum tap target: min-h-[48px] min-w-[48px] on interactive controls where practical.
+- Dark-first UI per PRD.
+
+## Prohibited Patterns
+- No class components
+- No direct SQL strings in components (use /db/queries.ts)
+- No network calls in user-facing place flows
+- No emoji in UI (use icon components)

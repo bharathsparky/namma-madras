@@ -1,59 +1,128 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import {
+  Manrope_400Regular,
+  Manrope_600SemiBold,
+  Manrope_700Bold,
+} from '@expo-google-fonts/manrope';
+import {
+  MuktaMalar_400Regular,
+  MuktaMalar_500Medium,
+  MuktaMalar_700Bold,
+} from '@expo-google-fonts/mukta-malar';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { SQLiteProvider } from 'expo-sqlite';
+import { Suspense, useEffect } from 'react';
+import { ActivityIndicator, LogBox, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/components/useColorScheme';
+import { initDatabase } from '@/db/initDatabase';
+import { useLanguageStore } from '@/stores/languageStore';
+import { useOnboardingStore } from '@/stores/onboardingStore';
+import { usePersonaStore } from '@/stores/personaStore';
+import { useSettingsStore } from '@/stores/settingsStore';
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
+import { colors } from '@/constants/theme';
+import '../global.css';
+
+LogBox.ignoreLogs(['ViewTagResolver']);
+
+export { ErrorBoundary } from 'expo-router';
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: 'index',
 };
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+function LoadingScreen() {
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: colors.surfaceDark,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <ActivityIndicator size="large" color={colors.primary} />
+    </View>
+  );
+}
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    ...FontAwesome.font,
+    Manrope_400Regular,
+    Manrope_600SemiBold,
+    Manrope_700Bold,
+    MuktaMalar_400Regular,
+    MuktaMalar_500Medium,
+    MuktaMalar_700Bold,
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
   if (!loaded) {
-    return null;
+    return (
+      <>
+        <StatusBar style="dark" />
+        <LoadingScreen />
+      </>
+    );
   }
 
-  return <RootLayoutNav />;
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <SQLiteProvider
+        databaseName="csg.db"
+        assetSource={{ assetId: require('../assets/db/csg.db') }}
+        onInit={initDatabase}
+        useSuspense
+      >
+        <RootNav />
+      </SQLiteProvider>
+    </Suspense>
+  );
 }
 
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+function RootNav() {
+  const hydrateLang = useLanguageStore((s) => s.hydrate);
+  const hydrateOnboarding = useOnboardingStore((s) => s.hydrate);
+  const hydratePersona = usePersonaStore((s) => s.hydrate);
+  const hydrateSettings = useSettingsStore((s) => s.hydrate);
+
+  useEffect(() => {
+    void Promise.all([
+      hydrateLang(),
+      hydrateOnboarding(),
+      hydratePersona(),
+      hydrateSettings(),
+    ]);
+  }, [hydrateLang, hydrateOnboarding, hydratePersona, hydrateSettings]);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+    <>
+      <StatusBar style="dark" />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: colors.surfaceDark },
+          animation: 'none',
+        }}
+      >
+        <Stack.Screen name="index" />
+        <Stack.Screen name="onboard" />
+        <Stack.Screen name="onboarding" />
+        <Stack.Screen name="home" />
+        <Stack.Screen name="hub/[slug]" />
+        <Stack.Screen name="categories" />
+        <Stack.Screen name="emergency" />
+        <Stack.Screen name="place/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="category/[slug]" />
+        <Stack.Screen name="saved" />
+        <Stack.Screen name="settings" options={{ presentation: 'modal', animation: 'none' }} />
+        <Stack.Screen name="search" />
       </Stack>
-    </ThemeProvider>
+    </>
   );
 }
