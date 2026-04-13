@@ -537,8 +537,8 @@ export const HEALTHCARE_SEED: HealthcarePlace[] = [
   // ─────────────────────────────────────────────────────────────
   {
     id: 18,
-    name_en: 'ESIC Hospital cum ODC — K.K. Nagar',
-    name_ta: 'ESIC மருத்துவமனை — KK நகர்',
+    name_en: 'ESIC Hospital and ODC — K.K. Nagar',
+    name_ta: 'ESIC மருத்துவமனை மற்றும் ODC — KK நகர்',
     category: 'esi_hospital',
     area: 'K.K. Nagar',
     full_address: 'Ashok Pillar Road, K.K. Nagar, Chennai — 600078',
@@ -558,7 +558,7 @@ export const HEALTHCARE_SEED: HealthcarePlace[] = [
     access_type: 'workers_only',
     availability: 'always',
     beds: 300,
-    note_en: 'For workers covered under ESI Act (factories, shops with 10+ employees). Show ESI card. Completely free treatment including medicines. Check eligibility: ESI covers ~6 months salary threshold employees.',
+    note_en: 'For workers covered under the ESI Act (factories, shops with 10+ employees). Show your ESI card. Completely free treatment including medicines where eligible. Check eligibility: ESI applies to employees earning below the wage ceiling set under the Act.',
     note_ta: 'ESI சட்டத்தின் கீழ் வரும் தொழிலாளர்களுக்கு (தொழிற்சாலைகள், கடைகள்). ESI அட்டை காட்டவும். மருந்துகள் உட்பட முழு இலவச சிகிச்சை.',
     is_verified: true,
     is_emergency_24h: true,

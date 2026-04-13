@@ -39,15 +39,15 @@ export function ReceptionHallHintBanner({ lang, hint, onDismiss }: Props) {
 
   return (
     <View className="mx-4 mt-2">
-      <View className="flex-row overflow-hidden rounded-xl border border-primary/18 bg-primary/[0.06]">
+      <View className="flex-row overflow-hidden rounded-xl border border-ink/12 bg-ink/[0.04]">
         <Pressable
           onPress={openMaps}
-          className="min-h-[48px] flex-1 flex-row items-center gap-2.5 px-3 py-2.5 active:bg-primary/[0.07]"
+          className="min-h-[48px] flex-1 flex-row items-center gap-2.5 px-3 py-2.5 active:bg-ink/[0.05]"
           accessibilityRole="button"
           accessibilityLabel={line}
           accessibilityHint={a11yHint}
         >
-          <Ionicons name="sparkles-outline" size={18} color={colors.primary} accessibilityElementsHidden />
+          <Ionicons name="sparkles-outline" size={18} color={colors.inkMuted} accessibilityElementsHidden />
           <Text
             style={{ fontFamily: f.medium }}
             className="min-w-0 flex-1 text-[13px] leading-[18px] text-ink/88"
@@ -60,7 +60,7 @@ export function ReceptionHallHintBanner({ lang, hint, onDismiss }: Props) {
         <Pressable
           onPress={onDismiss}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          className="w-11 items-center justify-center border-l border-primary/12 active:bg-ink/[0.04]"
+          className="w-11 items-center justify-center border-l border-ink/10 active:bg-ink/[0.04]"
           accessibilityRole="button"
           accessibilityLabel={t('home.receptionHall.dismiss')}
         >

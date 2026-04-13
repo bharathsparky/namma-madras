@@ -3,7 +3,7 @@ import { colors } from '@/constants/theme';
 
 /**
  * Learn hub: teal slate aligned with category learn `#1FA896`.
- * Hero art: `hub-learn-hero-illustration.png` (vocational / skill-building flat-lay); shared with category grid tile; `cover` in `categoryHubVisual`.
+ * Hero art: `category-learn-books.webp` — books / study; shared with category grid tile; `cover` in `categoryHubVisual`.
  */
 export const learnHubHero = {
   textPanel: '#2A4E4A',

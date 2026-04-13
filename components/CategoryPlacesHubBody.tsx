@@ -1,18 +1,19 @@
-import { router } from 'expo-router';
 import { useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
 import { FoodPlaceCard } from '@/components/FoodPlaceCard';
-import { HealthcareSosCard } from '@/components/HealthcareSosCard';
 import { MedicalHubFilterBar, type MedicalHubFilterId } from '@/components/MedicalHubFilterBar';
+import { ListSearchButton } from '@/components/ListSearchButton';
 import { SectionHeading } from '@/components/SectionHeading';
 import type { Lang } from '@/db/types';
-import { getHealthcareSosNumbers, getHubCategoryPlaces } from '@/db/queries';
+import { getCategoryById, getHubCategoryPlaces } from '@/db/queries';
 import { useFontFamily } from '@/hooks/useFontFamily';
 import { useLiveClock } from '@/hooks/useLiveClock';
+import { useNavigateToPlace } from '@/hooks/usePlaceNavigation';
 import { useLocationStore } from '@/stores/locationStore';
 import { buildSortedFoodPlaces, sortFoodPlaceItems } from '@/utils/foodPlaceSort';
+import { pickTaEn } from '@/utils/pickTaEn';
 
 type Props = {
   categoryId: number;
@@ -22,7 +23,7 @@ type Props = {
 };
 
 /**
- * Non-food category hub listing: same **card chrome** as food home (`FoodPlaceCard` hub variant),
+ * Non-food category hub listing: same row model as food home (`FoodPlaceCard` hub variant,
  * distance-sorted — no food filter bar or tier sections.
  */
 export function CategoryPlacesHubBody({ categoryId, lang, listCopyNs, listFooter }: Props) {
@@ -31,7 +32,7 @@ export function CategoryPlacesHubBody({ categoryId, lang, listCopyNs, listFooter
   const f = useFontFamily(lang);
   const lat = useLocationStore((s) => s.latitude);
   const lon = useLocationStore((s) => s.longitude);
-  const now = useLiveClock(30000);
+  const now = useLiveClock(60000);
 
   const [medicalFilter, setMedicalFilter] = useState<MedicalHubFilterId>('all');
 
@@ -39,8 +40,6 @@ export function CategoryPlacesHubBody({ categoryId, lang, listCopyNs, listFooter
     () => getHubCategoryPlaces(db, categoryId, lat, lon),
     [db, categoryId, lat, lon],
   );
-
-  const sosRows = useMemo(() => getHealthcareSosNumbers(db), [db]);
 
   const filteredPlaces = useMemo(() => {
     if (categoryId !== 3 || medicalFilter === 'all') return places;
@@ -59,23 +58,34 @@ export function CategoryPlacesHubBody({ categoryId, lang, listCopyNs, listFooter
 
   const k = (key: string) => `${listCopyNs}.${key}`;
 
+  const hubCategoryRow = useMemo(() => getCategoryById(db, categoryId), [db, categoryId]);
+  const goToPlace = useNavigateToPlace();
+
   const showMedicalChrome = categoryId === 3;
 
   return (
-    <View className="px-4 pt-3">
-      {showMedicalChrome ? <HealthcareSosCard lang={lang} rows={sosRows} /> : null}
-
+    <View className="gap-4 px-4 pt-5">
       {showMedicalChrome ? (
         <MedicalHubFilterBar lang={lang} selected={medicalFilter} onSelect={setMedicalFilter} />
       ) : null}
 
       {ordered.length > 0 ? (
-        <View className={showMedicalChrome ? '' : 'mt-1'}>
+        <View className={showMedicalChrome ? '' : 'mt-0'}>
           <SectionHeading
             lang={lang}
             overline={t(k('listOverline'))}
             title={t(k('listTitle'))}
             className="mb-4"
+            right={
+              hubCategoryRow ? (
+                <ListSearchButton
+                  categoryId={categoryId}
+                  accessibilityLabel={t('home.listSearchA11yScoped', {
+                    category: pickTaEn(lang, hubCategoryRow.label_ta, hubCategoryRow.label_en),
+                  })}
+                />
+              ) : null
+            }
           />
           {ordered.map(({ place, tier, dimmed, distanceKm, etaMinutes }) => (
             <FoodPlaceCard
@@ -88,7 +98,8 @@ export function CategoryPlacesHubBody({ categoryId, lang, listCopyNs, listFooter
               distanceKm={distanceKm}
               etaMinutes={etaMinutes}
               deemphasized={false}
-              onPress={() => router.push(`/place/${place.id}`)}
+              surface="listRow"
+              onPress={() => goToPlace(place.id)}
             />
           ))}
         </View>

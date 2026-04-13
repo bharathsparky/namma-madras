@@ -1,4 +1,4 @@
-import { Image, type ImageSourcePropType, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Image, type ImageSourcePropType, Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { BannerGradientNoise } from '@/components/BannerGradientNoise';
 import type { SuperAppHeroTheme } from '@/constants/homeHero';
 
@@ -41,6 +41,10 @@ export function HeroIllustrationBand({
           })()
         : null;
 
+  const noiseVariant = theme.bannerNoiseVariant ?? 'dark';
+  /** `cover` art hides underlay mesh; a light overlay restores visible depth on the illustration. */
+  const artMeshOpacity = Platform.select({ ios: 0.3, android: 0.28, default: 0.3 });
+
   const imageInner = (
     <View
       pointerEvents="none"
@@ -78,8 +82,9 @@ export function HeroIllustrationBand({
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
     >
-      <BannerGradientNoise variant="dark" />
+      <BannerGradientNoise variant={noiseVariant} />
       {imageInner}
+      <BannerGradientNoise variant={noiseVariant} style={{ opacity: artMeshOpacity }} />
     </View>
   );
 }

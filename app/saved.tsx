@@ -33,7 +33,7 @@ export default function SavedScreen() {
   );
 
   return (
-    <View className="flex-1 bg-surface-dark">
+    <View className="flex-1 bg-transparent">
       <ScreenHeader
         title={t('saved.title')}
         lang={lang}
@@ -61,6 +61,7 @@ export default function SavedScreen() {
               distanceKm={distanceKm}
               etaMinutes={etaMinutes}
               deemphasized={false}
+              surface="listRow"
               onPress={() => router.push(`/place/${place.id}`)}
             />
           ))

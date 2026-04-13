@@ -29,18 +29,13 @@ import { PlaceDetailSection } from '@/components/PlaceDetailSection';
 import { StatusChip } from '@/components/StatusChip';
 import { WorkRightsBanner } from '@/components/WorkRightsBanner';
 import { CATEGORY_ID_ACCENT, CATEGORY_ID_SLUG } from '@/constants/categoryVisuals';
+import { FEEDBACK_EMAIL } from '@/constants/feedbackEmail';
 import { elevationSoft } from '@/constants/elevation';
 import { PLACE_DETAIL } from '@/constants/placeDetailSpacing';
 import { getPlaceCoverSource } from '@/constants/placeCoverAssets';
 import { STAY_AMBER_TICKET } from '@/constants/stayHub';
 import { colors, ui } from '@/constants/theme';
-import {
-  getApprovedTipForPlace,
-  getPlaceById,
-  insertUserTip,
-  isPlaceSaved,
-  toggleSavedPlace,
-} from '@/db/queries';
+import { getApprovedTipForPlace, getPlaceById, isPlaceSaved, toggleSavedPlace } from '@/db/queries';
 import { useFontFamily } from '@/hooks/useFontFamily';
 import { useLanguageStore } from '@/stores/languageStore';
 import { pickTaEn } from '@/utils/pickTaEn';
@@ -59,7 +54,7 @@ export default function PlaceDetailScreen() {
   const f = useFontFamily(lang);
   const insets = useSafeAreaInsets();
   const shotRef = useRef<ViewShot | null>(null);
-  const [tip, setTip] = useState('');
+  const [feedbackMessage, setFeedbackMessage] = useState('');
   const [, bump] = useState(0);
 
   const place = useMemo(() => (Number.isFinite(placeId) ? getPlaceById(db, placeId) : null), [db, placeId]);
@@ -106,7 +101,7 @@ export default function PlaceDetailScreen() {
 
   if (!place) {
     return (
-      <View className="flex-1 bg-surface-dark px-6">
+      <View className="flex-1 bg-transparent px-6">
         <View
           className="flex-row items-center justify-end px-2"
           style={{ paddingTop: Math.max(insets.top, 10), paddingBottom: 10 }}
@@ -182,19 +177,33 @@ export default function PlaceDetailScreen() {
     }
   };
 
-  const submitTip = () => {
-    if (!tip.trim()) return;
-    insertUserTip(db, place.id, tip.trim());
-    setTip('');
-    Alert.alert('', t('common.tipThanks'));
+  const sendListingFeedback = () => {
+    const msg = feedbackMessage.trim();
+    if (!msg) {
+      Alert.alert('', t('place.feedbackEmpty'));
+      return;
+    }
+    const subject = `[Chennai SG] Place #${place.id} — listing feedback`;
+    const body = [
+      `Place ID: ${place.id}`,
+      `Name: ${name}`,
+      `Address: ${place.full_address}`,
+      '',
+      'Message:',
+      msg,
+    ].join('\n');
+    const url = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    if (url.length > 7500) {
+      Alert.alert('', t('place.feedbackTooLong'));
+      return;
+    }
+    void Linking.openURL(url);
   };
 
   const toggleSave = () => {
     toggleSavedPlace(db, place.id, !saved);
     bump((x) => x + 1);
   };
-
-  const REPORT_EMAIL = 'chennai.survival.guide.feedback@proton.me';
 
   const stayHasCallouts =
     place.category_id === 2 &&
@@ -204,9 +213,9 @@ export default function PlaceDetailScreen() {
       Boolean(place.ngo_name?.trim()));
 
   return (
-    <View className="flex-1 bg-surface-dark">
+    <View className="flex-1 bg-transparent">
       <View
-        className="flex-row items-center justify-between bg-surface-dark px-2"
+        className="flex-row items-center justify-between bg-transparent px-2"
         style={{ paddingTop: Math.max(insets.top, 10), paddingBottom: 10 }}
       >
         <Pressable
@@ -397,10 +406,10 @@ export default function PlaceDetailScreen() {
 
         {approvedTip ? (
           <View
-            className="rounded-2xl border border-primary/18 bg-primary/[0.07] px-4 py-3.5"
+            className="rounded-2xl border border-ink/12 bg-ink/[0.04] px-4 py-3.5"
             style={{ marginTop: PLACE_DETAIL.section }}
           >
-            <Text style={{ fontFamily: f.bold }} className="text-[11px] uppercase tracking-[0.12em] text-primary">
+            <Text style={{ fontFamily: f.bold }} className="text-[11px] uppercase tracking-[0.12em] text-ink-muted">
               {t('place.tipLabel')}
             </Text>
             <Text style={{ fontFamily: f.regular }} className="mt-2 text-[15px] leading-[23px] text-ink/88">
@@ -452,42 +461,35 @@ export default function PlaceDetailScreen() {
           </View>
         </PlaceDetailSection>
 
-        <PlaceDetailSection lang={lang} label={t('place.sectionCommunity')}>
+        <PlaceDetailSection lang={lang} label={t('place.sectionFeedback')}>
           <View className="rounded-2xl border border-ink/10 bg-surface-card-dark p-3.5" style={elevationSoft}>
+            <Text style={{ fontFamily: f.regular }} className="text-[13px] leading-5 text-ink-muted">
+              {t('place.feedbackHint')}
+            </Text>
             <TextInput
-              value={tip}
-              onChangeText={setTip}
-              placeholder={t('common.tipPlaceholder')}
+              value={feedbackMessage}
+              onChangeText={setFeedbackMessage}
+              placeholder={t('place.feedbackPlaceholder')}
               placeholderTextColor={ui.placeholderMuted}
               multiline
-              maxLength={280}
-              className="min-h-[88px] rounded-xl border border-ink/10 bg-surface-inset p-3 text-[15px] text-ink/90"
+              maxLength={2000}
+              className="mt-3 min-h-[100px] rounded-xl border border-ink/10 bg-surface-inset p-3 text-[15px] text-ink/90"
               style={{ fontFamily: f.regular }}
               textAlignVertical="top"
+              accessibilityLabel={t('place.feedbackPlaceholder')}
             />
             <Pressable
-              onPress={submitTip}
-              className="mt-3 min-h-[48px] items-center justify-center rounded-xl bg-primary-dim active:opacity-92"
+              onPress={sendListingFeedback}
+              className="mt-3 min-h-[52px] flex-row items-center justify-center rounded-xl bg-primary active:opacity-92"
               accessibilityRole="button"
+              accessibilityLabel={t('place.feedbackSubmit')}
             >
-              <Text style={{ fontFamily: f.bold }} className="text-on-primary">
-                {t('common.tipSubmit')}
+              <Ionicons name="mail-outline" size={20} color={colors.onPrimary} />
+              <Text style={{ fontFamily: f.bold }} className="ml-2 text-[16px] text-on-primary">
+                {t('place.feedbackSubmit')}
               </Text>
             </Pressable>
           </View>
-          <Pressable
-            onPress={() =>
-              void Linking.openURL(
-                `mailto:${REPORT_EMAIL}?subject=${encodeURIComponent(`Report place #${place.id}`)}&body=${encodeURIComponent(place.full_address)}`,
-              )
-            }
-            className="mt-4 min-h-[48px] justify-center"
-            accessibilityRole="button"
-          >
-            <Text style={{ fontFamily: f.medium }} className="text-center text-[15px] text-primary">
-              {t('common.report')}
-            </Text>
-          </Pressable>
         </PlaceDetailSection>
 
         {place.is_verified && place.verified_by_org ? (
@@ -521,8 +523,8 @@ export default function PlaceDetailScreen() {
           <Text style={{ fontFamily: f.regular, color: 'rgba(22, 26, 25, 0.62)', marginTop: 10, fontSize: 14, lineHeight: 20 }}>
             {place.full_address}
           </Text>
-          <View style={{ marginTop: 16, height: StyleSheet.hairlineWidth, backgroundColor: 'rgba(0, 170, 19, 0.12)' }} />
-          <Text style={{ fontFamily: f.medium, color: colors.primary, marginTop: 12, fontSize: 13 }}>{t('appName')}</Text>
+          <View style={{ marginTop: 16, height: StyleSheet.hairlineWidth, backgroundColor: 'rgba(0, 105, 92, 0.12)' }} />
+          <Text style={{ fontFamily: f.medium, color: colors.inkMuted, marginTop: 12, fontSize: 13 }}>{t('appName')}</Text>
         </ViewShot>
       </View>
     </View>

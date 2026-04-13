@@ -16,7 +16,11 @@ export const useSettingsStore = create<State>((set) => ({
     set({ tamilNumerals: v });
   },
   hydrate: async () => {
-    const s = await AsyncStorage.getItem(KEY);
-    set({ tamilNumerals: s === '1' });
+    try {
+      const s = await AsyncStorage.getItem(KEY);
+      set({ tamilNumerals: s === '1' });
+    } catch {
+      set({ tamilNumerals: false });
+    }
   },
 }));

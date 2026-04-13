@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
 
-export type BannerGradientNoiseVariant = 'dark' | 'light' | 'brand';
+export type BannerGradientNoiseVariant = 'dark' | 'light' | 'brand' | 'cool' | 'marketplace';
 
 type Props = {
   variant?: BannerGradientNoiseVariant;
@@ -106,8 +106,62 @@ const BRAND_MESH = {
   liftOpacity: 0.5,
 } as const;
 
+/** Teal / water hubs — visible on deep cyan panels (warm `dark` mesh disappears on cool backgrounds). */
+const COOL_MESH = {
+  primary: {
+    colors: [
+      'rgba(180, 235, 245, 0.2)',
+      'rgba(94, 196, 212, 0.14)',
+      'rgba(42, 90, 102, 0.22)',
+      'rgba(18, 48, 56, 0.38)',
+    ] as const,
+    locations: [0, 0.32, 0.68, 1] as const,
+    start: { x: 0.12, y: 0 },
+    end: { x: 0.88, y: 1 },
+  },
+  lift: {
+    colors: [
+      'rgba(255, 255, 255, 0.12)',
+      'rgba(255, 255, 255, 0)',
+      'rgba(40, 120, 140, 0.12)',
+    ] as const,
+    locations: [0, 0.5, 1] as const,
+    start: { x: 0, y: 1 },
+    end: { x: 1, y: 0 },
+  },
+  liftOpacity: 0.52,
+} as const;
+
+/** Home marketplace strip — tuned for `marketplaceBannerGradient` (charcoal-green), reads as depth not noise. */
+const MARKETPLACE_MESH = {
+  primary: {
+    colors: [
+      'rgba(190, 225, 205, 0.14)',
+      'rgba(100, 145, 125, 0.11)',
+      'rgba(45, 62, 56, 0.26)',
+      'rgba(12, 20, 18, 0.4)',
+    ] as const,
+    locations: [0, 0.32, 0.68, 1] as const,
+    start: { x: 0.08, y: 0 },
+    end: { x: 0.92, y: 1 },
+  },
+  lift: {
+    colors: [
+      'rgba(255, 235, 200, 0.07)',
+      'rgba(255, 255, 255, 0)',
+      'rgba(0, 95, 80, 0.1)',
+    ] as const,
+    locations: [0, 0.48, 1] as const,
+    start: { x: 0, y: 1 },
+    end: { x: 1, y: 0 },
+  },
+  liftOpacity: 0.5,
+} as const;
+
 const MESH_BY_VARIANT = {
   dark: DARK_MESH,
   light: LIGHT_MESH,
   brand: BRAND_MESH,
+  cool: COOL_MESH,
+  marketplace: MARKETPLACE_MESH,
 } as const;

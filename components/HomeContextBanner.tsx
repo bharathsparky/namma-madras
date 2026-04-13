@@ -21,7 +21,7 @@ export function HomeContextBanner({
   const f = useFontFamily(lang);
   return (
     <LinearGradient
-      colors={[colors.primary, colors.primaryDim]}
+      colors={[colors.contextBannerStart, colors.contextBannerEnd]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={{

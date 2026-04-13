@@ -5,13 +5,16 @@ import { Pressable, Text, View } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
 import { FoodPlaceCard } from '@/components/FoodPlaceCard';
 import { HomeFoodFilterBar, type HomeFoodFilterId } from '@/components/HomeFoodFilterBar';
+import { ListSearchButton } from '@/components/ListSearchButton';
 import { SectionHeading } from '@/components/SectionHeading';
 import type { Lang } from '@/db/types';
-import { getHubCategoryPlaces } from '@/db/queries';
+import { getCategoryById, getHubCategoryPlaces } from '@/db/queries';
 import { useFontFamily } from '@/hooks/useFontFamily';
 import { useLiveClock } from '@/hooks/useLiveClock';
+import { useNavigateToPlace } from '@/hooks/usePlaceNavigation';
 import { useLocationStore } from '@/stores/locationStore';
 import { buildSortedFoodPlaces, sortFoodPlaceItems, type HomeFoodSortId } from '@/utils/foodPlaceSort';
+import { pickTaEn } from '@/utils/pickTaEn';
 
 const SECONDARY_PREVIEW = 5;
 
@@ -32,7 +35,8 @@ export function CategoryHubBody({ categoryId, lang, listCopyNs, listFooter }: Pr
   const f = useFontFamily(lang);
   const lat = useLocationStore((s) => s.latitude);
   const lon = useLocationStore((s) => s.longitude);
-  const now = useLiveClock(30000);
+  /** 60s — tier/open-state updates without re-rendering the whole list every 30s. */
+  const now = useLiveClock(60000);
 
   const places = useMemo(
     () => getHubCategoryPlaces(db, categoryId, lat, lon),
@@ -77,6 +81,14 @@ export function CategoryHubBody({ categoryId, lang, listCopyNs, listFooter }: Pr
 
   const k = (key: string) => `${listCopyNs}.${key}`;
 
+  const categoryRow = useMemo(() => getCategoryById(db, categoryId), [db, categoryId]);
+  const goToPlace = useNavigateToPlace();
+
+  const toolbarOverline =
+    categoryId === 1 ? t('home.foodListToolbarOverline') : t('home.listToolbarOverline');
+  const toolbarTitle =
+    categoryId === 1 ? t('home.foodListToolbarTitle') : t('home.listToolbarTitle');
+
   const renderPrimaryCards = () =>
     primaryPlaces.map(({ place, tier, dimmed, distanceKm, etaMinutes }) => (
       <FoodPlaceCard
@@ -88,7 +100,8 @@ export function CategoryHubBody({ categoryId, lang, listCopyNs, listFooter }: Pr
         distanceKm={distanceKm}
         etaMinutes={etaMinutes}
         deemphasized={false}
-        onPress={() => router.push(`/place/${place.id}`)}
+        surface="listRow"
+        onPress={() => goToPlace(place.id)}
       />
     ));
 
@@ -103,21 +116,40 @@ export function CategoryHubBody({ categoryId, lang, listCopyNs, listFooter }: Pr
         distanceKm={distanceKm}
         etaMinutes={etaMinutes}
         deemphasized
-        onPress={() => router.push(`/place/${place.id}`)}
+        surface="listRow"
+        onPress={() => goToPlace(place.id)}
       />
     ));
 
   return (
-    <View className="px-4 pt-3">
+    <View className="px-4 pt-5">
       {places.length > 0 ? (
-        <HomeFoodFilterBar
-          lang={lang}
-          selected={placeFilter}
-          onSelect={setPlaceFilter}
-          selectedSort={placeSort}
-          onSelectSort={setPlaceSort}
-          filterBarA11yLabel={t(k('filterSortBarA11y'))}
-        />
+        <View className="gap-3">
+          <SectionHeading
+            lang={lang}
+            overline={toolbarOverline}
+            title={toolbarTitle}
+            className="mb-0"
+            right={
+              categoryRow ? (
+                <ListSearchButton
+                  categoryId={categoryId}
+                  accessibilityLabel={t('home.listSearchA11yScoped', {
+                    category: pickTaEn(lang, categoryRow.label_ta, categoryRow.label_en),
+                  })}
+                />
+              ) : null
+            }
+          />
+          <HomeFoodFilterBar
+            lang={lang}
+            selected={placeFilter}
+            onSelect={setPlaceFilter}
+            selectedSort={placeSort}
+            onSelectSort={setPlaceSort}
+            filterBarA11yLabel={t(k('filterSortBarA11y'))}
+          />
+        </View>
       ) : null}
 
       {places.length > 0 && baseFiltered.length === 0 ? (
@@ -131,7 +163,7 @@ export function CategoryHubBody({ categoryId, lang, listCopyNs, listFooter }: Pr
             accessibilityRole="button"
             accessibilityLabel={t(k('quickFilterClear'))}
           >
-            <Text style={{ fontFamily: f.medium }} className="text-primary">
+            <Text style={{ fontFamily: f.medium }} className="text-ink-muted">
               {t(k('quickFilterClear'))}
             </Text>
           </Pressable>
@@ -142,18 +174,23 @@ export function CategoryHubBody({ categoryId, lang, listCopyNs, listFooter }: Pr
         <View className="mt-5">
           {primaryPlaces.length > 0 ? (
             <>
-              <SectionHeading
-                lang={lang}
-                overline={t('home.listGoNowOverline')}
-                title={t('home.listGoNowTitle')}
-                className="mb-4"
-              />
-              {renderPrimaryCards()}
+              {/* Food home: toolbar block already introduces the list — skip duplicate “Right now” header. */}
+              {categoryId !== 1 ? (
+                <SectionHeading
+                  lang={lang}
+                  overline={t('home.listGoNowOverline')}
+                  title={t('home.listGoNowTitle')}
+                  className="mb-4"
+                />
+              ) : null}
+              <View className={categoryId === 1 ? 'mt-1' : undefined}>
+                {renderPrimaryCards()}
+              </View>
             </>
           ) : null}
 
           {primaryPlaces.length === 0 && secondaryPlaces.length > 0 ? (
-            <View className="mb-5 rounded-xl border border-primary/20 bg-primary/[0.06] px-4 py-3">
+            <View className="mb-5 rounded-xl border border-ink/12 bg-ink/[0.04] px-4 py-3">
               <Text style={{ fontFamily: f.medium }} className="text-sm leading-5 text-ink">
                 {t('home.listNoOpenBanner')}
               </Text>
@@ -162,12 +199,15 @@ export function CategoryHubBody({ categoryId, lang, listCopyNs, listFooter }: Pr
 
           {secondaryPlaces.length > 0 ? (
             <View className={primaryPlaces.length > 0 ? 'mt-8' : ''}>
-              <SectionHeading
-                lang={lang}
-                overline={t('home.listLaterOverline')}
-                title={t('home.listLaterTitle')}
-                className="mb-4"
-              />
+              {/* Banner already explains “nothing clearly open”; skip duplicate “Not open now” heading. */}
+              {primaryPlaces.length > 0 ? (
+                <SectionHeading
+                  lang={lang}
+                  overline={t('home.listLaterOverline')}
+                  title={t('home.listLaterTitle')}
+                  className="mb-4"
+                />
+              ) : null}
               {renderSecondaryCards()}
               {secondaryMoreCount > 0 ? (
                 <Pressable
@@ -176,7 +216,7 @@ export function CategoryHubBody({ categoryId, lang, listCopyNs, listFooter }: Pr
                   accessibilityRole="button"
                   accessibilityLabel={t('home.listShowMoreLater', { count: secondaryMoreCount })}
                 >
-                  <Text style={{ fontFamily: f.medium }} className="text-center text-[15px] text-primary">
+                  <Text style={{ fontFamily: f.medium }} className="text-center text-[15px] text-ink">
                     {t('home.listShowMoreLater', { count: secondaryMoreCount })}
                   </Text>
                 </Pressable>
@@ -198,7 +238,7 @@ export function CategoryHubBody({ categoryId, lang, listCopyNs, listFooter }: Pr
             accessibilityLabel={t('home.heroBrowseCategories')}
             accessibilityHint={t('a11y.openCategory')}
           >
-            <Text style={{ fontFamily: f.medium }} className="text-primary">
+            <Text style={{ fontFamily: f.medium }} className="text-ink-muted">
               {t('home.heroBrowseCategories')}
             </Text>
           </Pressable>

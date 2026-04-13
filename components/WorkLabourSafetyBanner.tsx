@@ -61,7 +61,7 @@ export function WorkLabourSafetyBanner({ lang }: Props) {
             accessibilityRole="button"
             accessibilityLabel={t('hub.work.safetyDismiss')}
           >
-            <Text style={{ fontFamily: f.medium }} className="text-[14px] text-primary">
+            <Text style={{ fontFamily: f.medium }} className="text-[14px] text-ink-muted">
               {t('hub.work.safetyDismiss')}
             </Text>
           </Pressable>

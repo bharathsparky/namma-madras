@@ -3,7 +3,7 @@ import { colors } from '@/constants/theme';
 
 /**
  * Work hub — warm amber aligned with category work #D4922E.
- * Hero art: `hub-work-hero-banner.png` (workforce flat-lay); shared with category grid tile.
+ * Hero art: `category-work-hard-hat.webp` — hard hat + gloves; shared with category grid tile.
  */
 export const workHubHero = {
   textPanel: '#4A3828',

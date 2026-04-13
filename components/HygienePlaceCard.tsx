@@ -108,8 +108,8 @@ export function HygienePlaceCard({ place, lang }: Props) {
           ) : null}
 
           {isBarber ? (
-            <View className="mt-3 rounded-xl border border-primary/15 bg-primary/[0.05] px-3 py-2.5">
-              <Text style={{ fontFamily: f.bold }} className="text-[12px] uppercase tracking-wide text-primary">
+            <View className="mt-3 rounded-xl border border-ink/12 bg-ink/[0.04] px-3 py-2.5">
+              <Text style={{ fontFamily: f.bold }} className="text-[12px] uppercase tracking-wide text-ink-muted">
                 {t('hub.hygiene.barberWalkinTitle')}
               </Text>
               <Text style={{ fontFamily: f.regular }} className="mt-1 text-[13px] leading-[20px] text-ink">
@@ -144,10 +144,10 @@ export function HygienePlaceCard({ place, lang }: Props) {
         accessibilityHint={t('a11y.openPlace')}
         className="flex-row items-center justify-end border-t border-ink/[0.06] px-3 py-2.5 active:bg-ink/[0.03]"
       >
-        <Text style={{ fontFamily: f.medium }} className="text-xs text-primary">
+        <Text style={{ fontFamily: f.medium }} className="text-xs text-ink-muted">
           {t('hub.hygiene.openDetails')}
         </Text>
-        <Ionicons name="chevron-forward" size={18} color={colors.primary} />
+        <Ionicons name="chevron-forward" size={18} color={colors.inkMuted} />
       </Pressable>
     </View>
   );

@@ -1,10 +1,10 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useMemo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import type { Lang, PlaceRow } from '@/db/types';
+import type { CostType, Lang, PlaceRow } from '@/db/types';
 import type { PlaceWithDistance } from '@/db/queries';
 import {
   CATEGORY_ID_SLUG,
@@ -13,7 +13,7 @@ import {
   categoryIconForSlug,
 } from '@/constants/categoryVisuals';
 import { getPlaceCoverSource } from '@/constants/placeCoverAssets';
-import { foodPlaceCardOutline, listingCardShell } from '@/constants/listingCardChrome';
+import { foodPlaceCardOutline, foodPlaceListRowDivider, listingCardShell } from '@/constants/listingCardChrome';
 import { colors, ui } from '@/constants/theme';
 import { useFontFamily } from '@/hooks/useFontFamily';
 import { useSettingsStore } from '@/stores/settingsStore';
@@ -66,7 +66,42 @@ type Props = {
    * `hub` — generic open/closed; icon/gradient from category.
    */
   variant?: 'food' | 'hub';
+  /**
+   * `card` — rounded tile with border + lift (default).
+   * `listRow` — full-width row with hairline divider for long lists (home, hubs, search, saved).
+   */
+  surface?: 'card' | 'listRow';
 };
+
+function stayCostPillStyle(cost: CostType): {
+  label: string;
+  pillBg: string;
+  pillBorder: string;
+  textColor: string;
+} {
+  if (cost === 'free') {
+    return {
+      label: 'free',
+      pillBg: 'rgba(0, 143, 15, 0.1)',
+      pillBorder: 'rgba(0, 143, 15, 0.26)',
+      textColor: colors.badgeFree,
+    };
+  }
+  if (cost === 'subsidised') {
+    return {
+      label: 'subsidised',
+      pillBg: ui.badgeSubsidisedWash,
+      pillBorder: 'rgba(184, 137, 15, 0.32)',
+      textColor: colors.badgeSubsidised,
+    };
+  }
+  return {
+    label: 'paid',
+    pillBg: 'rgba(199, 61, 56, 0.1)',
+    pillBorder: 'rgba(199, 61, 56, 0.28)',
+    textColor: colors.badgeClosed,
+  };
+}
 
 function shortStatusLabel(
   variant: 'food' | 'hub',
@@ -84,7 +119,7 @@ function shortStatusLabel(
   return t('home.cardStatusCheck');
 }
 
-export function FoodPlaceCard({
+function FoodPlaceCardInner({
   place,
   lang,
   tier,
@@ -94,6 +129,7 @@ export function FoodPlaceCard({
   onPress,
   deemphasized = false,
   variant = 'food',
+  surface = 'card',
 }: Props) {
   const { t } = useTranslation();
   const f = useFontFamily(lang);
@@ -120,6 +156,17 @@ export function FoodPlaceCard({
 
   const statusText = shortStatusLabel(variant, tier, place, t);
   const accent = statusAccent(tier);
+
+  const showStayCostPill = variant === 'hub' && hubCategorySlug === 'stay';
+  const stayCostStyle = showStayCostPill ? stayCostPillStyle(place.cost_type) : null;
+  const stayCostLabel =
+    stayCostStyle?.label === 'free'
+      ? t('common.free')
+      : stayCostStyle?.label === 'subsidised'
+        ? t('common.subsidised')
+        : stayCostStyle
+          ? t('common.paid')
+          : '';
 
   let etaPart: string | undefined;
   if (etaMinutes != null) {
@@ -150,10 +197,11 @@ export function FoodPlaceCard({
     deemphasized && variant === 'food' ? t('home.listDeemphasizedA11yPrefix') : null,
     name,
     statusText,
+    showStayCostPill ? stayCostLabel : null,
     timingForA11y,
     place.area,
     kmPart,
-    a11yCostNote,
+    !showStayCostPill ? a11yCostNote : null,
   ]
     .filter(Boolean)
     .join('. ');
@@ -165,21 +213,36 @@ export function FoodPlaceCard({
   };
 
   const cardDeemphasized = variant === 'hub' ? false : deemphasized;
+  const isListRow = surface === 'listRow';
 
   const locationText = [place.area?.trim(), kmPart].filter(Boolean).join(' · ') || '—';
 
   return (
     <View
-      className="relative mb-3 overflow-hidden rounded-2xl bg-surface-card-dark"
-      style={listingCardShell(foodPlaceCardOutline(variant, deemphasized, dimmed))}
+      className={
+        isListRow
+          ? 'relative overflow-hidden bg-surface-dark'
+          : 'relative mb-3 overflow-hidden rounded-2xl bg-surface-card-dark'
+      }
+      style={
+        isListRow ? foodPlaceListRowDivider : listingCardShell(foodPlaceCardOutline(variant, deemphasized, dimmed))
+      }
     >
-      <View style={cardDeemphasized ? { opacity: 0.72 } : undefined}>
+      <View
+        style={
+          cardDeemphasized
+            ? { opacity: 0.72 }
+            : isListRow && dimmed
+              ? { opacity: 0.92 }
+              : undefined
+        }
+      >
         <Pressable
           onPress={onPress}
           accessibilityRole="button"
           accessibilityLabel={a11yMain}
           accessibilityHint={t('a11y.openPlace')}
-          className="relative flex-row items-center gap-3 px-3 py-3 active:bg-primary/[0.04]"
+          className={`relative flex-row items-center gap-3 px-3 active:bg-ink/[0.04] ${isListRow ? 'min-h-[52px] py-3.5' : 'py-3'}`}
         >
           <View
             style={{
@@ -225,7 +288,7 @@ export function FoodPlaceCard({
               {name}
             </Text>
 
-            <View className="mt-2 min-w-0 flex-row items-center gap-2">
+            <View className="mt-2 min-w-0 flex-row flex-wrap items-center gap-2">
               <View
                 style={{
                   paddingHorizontal: 8,
@@ -246,9 +309,36 @@ export function FoodPlaceCard({
                   {statusText}
                 </Text>
               </View>
+              {stayCostStyle ? (
+                <View
+                  style={{
+                    paddingHorizontal: 8,
+                    paddingVertical: 3,
+                    borderRadius: 999,
+                    backgroundColor: stayCostStyle.pillBg,
+                    borderWidth: StyleSheet.hairlineWidth,
+                    borderColor: stayCostStyle.pillBorder,
+                    flexShrink: 0,
+                  }}
+                  accessibilityElementsHidden
+                  importantForAccessibility="no-hide-descendants"
+                >
+                  <Text
+                    style={{
+                      fontFamily: f.bold,
+                      color: stayCostStyle.textColor,
+                      fontSize: 11,
+                      lineHeight: 14,
+                    }}
+                    numberOfLines={1}
+                  >
+                    {stayCostLabel}
+                  </Text>
+                </View>
+              ) : null}
               {timingLine ? (
                 <View className="min-w-0 flex-1 flex-row items-center gap-1">
-                  <Ionicons name="time-outline" size={14} color={colors.primary} style={{ flexShrink: 0 }} />
+                  <Ionicons name="time-outline" size={14} color={colors.inkMuted} style={{ flexShrink: 0 }} />
                   <Text
                     style={{ fontFamily: f.medium, color: ui.captionWarm }}
                     className="min-w-0 flex-1 text-[13px] leading-[17px]"
@@ -278,9 +368,9 @@ export function FoodPlaceCard({
                   hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
                   accessibilityRole="button"
                   accessibilityLabel={t('a11y.directionsToPlace', { place: name })}
-                  className="h-11 min-w-[44px] flex-shrink-0 flex-row items-center justify-center rounded-xl border border-ink/[0.09] bg-surface-inset/90 active:bg-primary/[0.07] active:opacity-95"
+                  className="h-11 min-w-[44px] flex-shrink-0 flex-row items-center justify-center rounded-xl border border-ink/[0.09] bg-surface-inset/90 active:bg-ink/[0.06] active:opacity-95"
                 >
-                  <Ionicons name="navigate-outline" size={17} color={colors.primary} />
+                  <Ionicons name="navigate-outline" size={17} color={colors.inkMuted} />
                 </Pressable>
               ) : null}
             </View>
@@ -291,3 +381,20 @@ export function FoodPlaceCard({
     </View>
   );
 }
+
+/** Skips re-renders when list parents pass new `onPress` closures — identity is ignored. */
+function foodPlaceCardPropsAreEqual(prev: Readonly<Props>, next: Readonly<Props>): boolean {
+  return (
+    prev.place === next.place &&
+    prev.tier === next.tier &&
+    prev.dimmed === next.dimmed &&
+    prev.distanceKm === next.distanceKm &&
+    prev.etaMinutes === next.etaMinutes &&
+    prev.lang === next.lang &&
+    prev.deemphasized === next.deemphasized &&
+    (prev.variant ?? 'food') === (next.variant ?? 'food') &&
+    (prev.surface ?? 'card') === (next.surface ?? 'card')
+  );
+}
+
+export const FoodPlaceCard = memo(FoodPlaceCardInner, foodPlaceCardPropsAreEqual);

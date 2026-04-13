@@ -1,67 +1,69 @@
 import { Platform, type ViewStyle } from 'react-native';
 
+import { warmShadowKey } from '@/constants/asphalt';
+
 /**
  * Asphalt Aloha — Low / High shadow tokens (light source perpendicular to screen).
+ * Kept **subtle** app-wide: borders carry separation; shadows only hint depth.
  * @see https://asphalt.gojek.io/pages/foundations_shadows.html
  */
 
-/** Low elevation — narrower shadow */
+/** Low elevation — hairline lift */
 export const shadowLow: ViewStyle =
   Platform.select<ViewStyle>({
     ios: {
-      shadowColor: '#101010',
+      shadowColor: warmShadowKey,
       shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.06,
-      shadowRadius: 4,
+      shadowOpacity: 0.04,
+      shadowRadius: 3,
     },
     android: { elevation: 1 },
     default: {},
   }) ?? {};
 
-/** High elevation — larger spread */
+/** High elevation — promo / hero tiles (still restrained) */
 export const shadowHigh: ViewStyle =
   Platform.select<ViewStyle>({
     ios: {
-      shadowColor: '#101010',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.12,
-      shadowRadius: 14,
+      shadowColor: warmShadowKey,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.05,
+      shadowRadius: 7,
     },
-    android: { elevation: 5 },
+    android: { elevation: 2 },
     default: {},
   }) ?? {};
 
 /**
- * List cards — soft lift with **green-tinted** shadow (not a harsh black halo).
- * Pair with subtle `border-primary/10` edges instead of heavy ink outlines.
+ * List rows (`FoodPlaceCard`, hub cards) — border does separation; shadow is a hairline only.
  */
 export const listingCardLift: ViewStyle =
   Platform.select<ViewStyle>({
     ios: {
-      shadowColor: '#1A3D24',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.07,
-      shadowRadius: 10,
+      shadowColor: warmShadowKey,
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.014,
+      shadowRadius: 2,
     },
-    android: { elevation: 3 },
+    android: { elevation: 1 },
     default: {},
   }) ?? {};
 
 /** Alias — same as Low shadow */
 export const elevationSoft = shadowLow;
 
-/** Hero / prominent cards */
+/** Hero / prominent cards (e.g. medical SOS strip) */
 export const elevationRaised = shadowHigh;
 
-/** Category grid tiles — soft lift, warm neutral (not harsh black). */
+/** Category grid tiles — barely-there depth */
 export const promoCategoryCardShadow: ViewStyle =
   Platform.select<ViewStyle>({
     ios: {
-      shadowColor: '#1a2430',
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.11,
-      shadowRadius: 16,
+      shadowColor: warmShadowKey,
+      shadowOffset: { width: 0, height: 3 },
+      shadowOpacity: 0.045,
+      shadowRadius: 8,
     },
-    android: { elevation: 6 },
+    android: { elevation: 3 },
     default: {},
   }) ?? {};

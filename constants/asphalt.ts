@@ -2,24 +2,46 @@
  * Asphalt Aloha (Gojek) design foundations — public docs only.
  * @see https://asphalt.gojek.io/
  *
- * Typography: Maison Neue (Book, Demi, Bold) — app uses Manrope as licensed stand-in (en).
- * Spacing: 4px base grid. Shadows: Low / High elevation. Brand green: #00AA13.
+ * Typography: Maison Neue (Book, Demi, Bold) — English UI uses Proxima Nova (bundled); Hindi uses Manrope as Latin stand-in.
+ * Spacing: 4px base grid. App brand primary: deep teal #00695C (aligned with onboarding).
+ *
+ * Namma Madras light theme: warm cream canvas + brown-gray inks (hospitality vs cool clinical grays).
  */
 export const ASPHALT_DOC = 'https://asphalt.gojek.io/';
 
-/** Latest Gojek green (foundations → Colors) */
-export const asphaltBrandGreen = '#00AA13';
+/** App brand primary — same teal as onboarding step 1 */
+export const asphaltBrandGreen = '#00695C';
 
-/** Green consumer theme — light fills (inferred UI roles: Fill / readable ink) */
+/**
+ * Marketplace hero — warm charcoal with a hint of teal (brand-adjacent but not a “green wall”).
+ * Android status bar should match index 0.
+ */
+export const marketplaceBannerGradient = ['#222826', '#2A3330', '#323E3B'] as const;
+
+export const marketplaceStatusBarTint = marketplaceBannerGradient[0];
+
+/** iOS elevation — warm charcoal (not pure black) for shadow keys */
+export const warmShadowKey = '#1A1614';
+
+/** Green consumer theme — light fills + readable ink (single source for theme + Tailwind) */
 export const asphaltGreenLight = {
   fillDefault: '#FFFFFF',
-  fillCanvas: '#F3F4F6',
-  fillMuted: '#E8EAED',
-  ink: '#101010',
-  inkSecondary: '#5C5F62',
-  inkTertiary: '#8A8D91',
-  border: 'rgba(16, 16, 16, 0.10)',
+  /** Main app canvas — warm cream */
+  fillCanvas: '#FAF8F5',
+  /** Inset wells, disabled tracks — warm gray-beige */
+  fillMuted: '#EDE8E2',
+  /** Primary body text — warm charcoal */
+  ink: '#1F1C1A',
+  inkSecondary: '#5E5854',
+  inkTertiary: '#8A837D',
+  border: 'rgba(31, 28, 26, 0.10)',
   onBrand: '#FFFFFF',
+  /** Category chip fill on hero / selected rows — neutral warm (green reserved for CTAs) */
+  selectedSurface: '#E3E0DB',
+  /** Solid wash — onboarding selection, panels (neutral vs sage) */
+  primaryWashSolid: '#E8E5E0',
+  /** Chip ring on dark gradient — warm highlight */
+  chipRingWarm: '#FFF7F0',
 } as const;
 
 /**

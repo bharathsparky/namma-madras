@@ -1,17 +1,19 @@
 {
   "name": "namma-madras",
   "main": "expo-router/entry",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "start": "expo start",
     "start:clean": "env -u CI expo start -c",
     "android": "expo run:android",
     "android:apk": "cd android && ./gradlew assembleDebug",
     "android:apk:release": "cd android && ./gradlew assembleRelease",
+    "android:aab:release": "cd android && ./gradlew bundleRelease",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
     "generate:db": "tsx --tsconfig tsconfig.json scripts/generate-bundled-db.ts",
+    "optimize:images": "node scripts/optimize-images.mjs",
     "test": "jest",
     "test:ci": "npm run typecheck && npm run test",
     "doctor": "npx expo-doctor"
@@ -41,6 +43,7 @@
     "expo-status-bar": "~3.0.9",
     "expo-web-browser": "~15.0.10",
     "i18next": "^26.0.3",
+    "moti": "^0.30.0",
     "nativewind": "^4.2.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -64,6 +67,7 @@
     "jest": "~29.7.0",
     "jest-expo": "~54.0.17",
     "react-test-renderer": "19.1.0",
+    "sharp": "^0.34.5",
     "tsx": "^4.21.0",
     "typescript": "~5.9.2"
   },

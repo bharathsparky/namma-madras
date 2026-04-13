@@ -27,6 +27,10 @@ export function getCategoryBySlug(db: SQLiteDatabase, slug: string): CategoryRow
   return db.getFirstSync<CategoryRow>('SELECT * FROM categories WHERE slug = ?', slug);
 }
 
+export function getCategoryById(db: SQLiteDatabase, id: number): CategoryRow | null {
+  return db.getFirstSync<CategoryRow>('SELECT * FROM categories WHERE id = ?', id);
+}
+
 export function getPlacesByCategory(
   db: SQLiteDatabase,
   categoryId: number,
@@ -55,22 +59,28 @@ export function getPlaceById(db: SQLiteDatabase, id: number): PlaceRow | null {
   return db.getFirstSync<PlaceRow>('SELECT * FROM places WHERE id = ? AND is_active = 1', id);
 }
 
-export function searchPlaces(db: SQLiteDatabase, query: string): PlaceRow[] {
-  const q = query.trim();
-  if (!q) return [];
-  const p = `%${q.replace(/%/g, '\\%')}%`;
-  return db.getAllSync<PlaceRow>(
-    `SELECT * FROM places WHERE is_active = 1 AND (
+const SEARCH_LIKE_SQL = `(
       name_en LIKE ? ESCAPE '\\' OR name_ta LIKE ? ESCAPE '\\' OR area LIKE ? ESCAPE '\\'
       OR sub_category LIKE ? ESCAPE '\\' OR IFNULL(description_en,'') LIKE ? ESCAPE '\\'
       OR IFNULL(description_ta,'') LIKE ? ESCAPE '\\'
-    ) ORDER BY name_en ASC LIMIT 200`,
-    p,
-    p,
-    p,
-    p,
-    p,
-    p,
+    )`;
+
+/** Text search across places. When `categoryId` is set, only rows in that category are returned. */
+export function searchPlaces(db: SQLiteDatabase, query: string, categoryId?: number | null): PlaceRow[] {
+  const q = query.trim();
+  if (!q) return [];
+  const p = `%${q.replace(/%/g, '\\%')}%`;
+  const binds = [p, p, p, p, p, p];
+  if (categoryId != null) {
+    return db.getAllSync<PlaceRow>(
+      `SELECT * FROM places WHERE is_active = 1 AND category_id = ? AND ${SEARCH_LIKE_SQL} ORDER BY name_en ASC LIMIT 200`,
+      categoryId,
+      ...binds,
+    );
+  }
+  return db.getAllSync<PlaceRow>(
+    `SELECT * FROM places WHERE is_active = 1 AND ${SEARCH_LIKE_SQL} ORDER BY name_en ASC LIMIT 200`,
+    ...binds,
   );
 }
 
@@ -88,8 +98,9 @@ export function searchPlacesSortedByDistance(
   query: string,
   lat: number | null,
   lon: number | null,
+  categoryId?: number | null,
 ): PlaceRowWithOptionalDistance[] {
-  const rows = searchPlaces(db, query);
+  const rows = searchPlaces(db, query, categoryId);
   if (lat == null || lon == null) return rows;
   const mapped: PlaceRowWithOptionalDistance[] = rows.map((p) => {
     if (p.latitude == null || p.longitude == null) return { ...p };
@@ -201,14 +212,6 @@ export function getApprovedTipForPlace(db: SQLiteDatabase, placeId: number): str
     placeId,
   );
   return row?.tip_text ?? null;
-}
-
-export function insertUserTip(db: SQLiteDatabase, placeId: number, tipText: string): void {
-  db.runSync(
-    `INSERT INTO user_tips (place_id, tip_text, status) VALUES (?, ?, 'pending')`,
-    placeId,
-    tipText.slice(0, 280),
-  );
 }
 
 export function getSavedPlaceIds(db: SQLiteDatabase): number[] {

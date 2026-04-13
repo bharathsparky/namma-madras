@@ -37,6 +37,11 @@ export type SuperAppHeroTheme = {
   heroPanelTopSeparator?: boolean;
   /** Thin bottom edge tint + accent line on the art strip (medical banner). */
   heroBannerBottomEdge?: boolean;
+  /**
+   * Mesh overlay on illustration strip + text panel (`BannerGradientNoise`).
+   * Default `dark` (warm dusk). Use `cool` for teal hubs (hygiene) where warm mesh reads invisible.
+   */
+  bannerNoiseVariant?: 'dark' | 'light' | 'brand' | 'cool' | 'marketplace';
 };
 
 /**

@@ -39,7 +39,7 @@ export function CategoryCard({
     return (
       <Pressable
         onPress={onPress}
-        className="mb-4 w-full min-h-[60px] flex-row items-center overflow-hidden rounded-[18px] border border-ink/[0.08] bg-surface-card-dark pl-0 active:border-primary/25"
+        className="mb-4 w-full min-h-[60px] flex-row items-center overflow-hidden rounded-[18px] border border-ink/[0.08] bg-surface-card-dark pl-0 active:border-ink/20"
         android_ripple={{ color: ui.ripplePrimary }}
         accessibilityRole="button"
         accessibilityLabel={label}

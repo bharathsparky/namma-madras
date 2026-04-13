@@ -7,12 +7,12 @@ import { learnHubHero } from '@/constants/learnHubHero';
 import { stayHubHero } from '@/constants/stayHubHero';
 import { workHubHero } from '@/constants/workHubHero';
 
-const STAY_ILLUSTRATION = require('../assets/images/hub-stay-hero-illustration.png');
-const LEARN_ILLUSTRATION = require('../assets/images/hub-learn-hero-illustration.png');
-const MEDICAL_HERO_BANNER = require('../assets/images/hub-medical-hero-banner.png');
-const WORK_HERO_BANNER = require('../assets/images/hub-work-hero-banner.png');
-const HYGIENE_HERO_BANNER = require('../assets/images/hub-hygiene-hero-banner.png');
-const EMERGENCY_HERO_BANNER = require('../assets/images/hub-emergency-hero-banner.png');
+const STAY_ILLUSTRATION = require('../assets/images/category-stay-room.webp');
+const LEARN_ILLUSTRATION = require('../assets/images/category-learn-books.webp');
+const MEDICAL_HERO_BANNER = require('../assets/images/category-medical-ambulance.webp');
+const WORK_HERO_BANNER = require('../assets/images/category-work-hard-hat.webp');
+const HYGIENE_HERO_BANNER = require('../assets/images/category-hygiene-shower.webp');
+const EMERGENCY_HERO_BANNER = require('../assets/images/category-emergency-phone-booth.webp');
 
 export type CategoryHubVisualConfig = {
   theme: SuperAppHeroTheme;

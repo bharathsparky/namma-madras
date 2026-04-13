@@ -6,26 +6,16 @@ import { ScrollView, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CategoriesHeroIllustration } from '@/components/CategoriesHeroIllustration';
 import { CategoryGridPromoCard } from '@/components/CategoryGridPromoCard';
-import { EmergencyButton } from '@/components/EmergencyButton';
+import { CompactSearchEntry } from '@/components/CompactSearchEntry';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { getCategories } from '@/db/queries';
 import { useLanguageStore } from '@/stores/languageStore';
+import { categoryHref } from '@/utils/categoryNavigation';
 
-const SCROLL_PAD_FAB = 80;
+const SCROLL_PAD_BOTTOM = 32;
 /** Matches ScrollView horizontal padding (px-6 = 24). */
 const GRID_H_PAD = 24;
 const GRID_GAP = 16;
-
-function categoryHref(slug: string): string {
-  if (slug === 'emergency') return '/emergency';
-  if (slug === 'food') return '/home';
-  if (slug === 'stay') return '/hub/stay';
-  if (slug === 'medical') return '/hub/medical';
-  if (slug === 'learn') return '/hub/learn';
-  if (slug === 'work') return '/hub/work';
-  if (slug === 'hygiene') return '/hub/hygiene';
-  return `/category/${slug}`;
-}
 
 export default function CategoriesScreen() {
   const { t } = useTranslation();
@@ -48,7 +38,7 @@ export default function CategoriesScreen() {
   const title = t('tabs.categories');
 
   return (
-    <View className="flex-1 bg-[#F8F7F5]">
+    <View className="flex-1 bg-transparent">
       <ScreenHeader
         title={title}
         lang={lang}
@@ -59,16 +49,14 @@ export default function CategoriesScreen() {
       <ScrollView
         className="flex-1 px-6"
         contentContainerStyle={{
-          paddingTop: 24,
-          paddingBottom: insets.bottom + SCROLL_PAD_FAB + 8,
+          paddingTop: 8,
+          paddingBottom: insets.bottom + SCROLL_PAD_BOTTOM + 8,
         }}
         showsVerticalScrollIndicator={false}
       >
-        <CategoriesHeroIllustration
-          lang={lang}
-          overline={t('categoriesScreen.heroOverline')}
-          title={t('categoriesScreen.heroTitle')}
-        />
+        <CategoriesHeroIllustration />
+
+        <CompactSearchEntry lang={lang} />
 
         {/* Explicit width + gap — RN flex-wrap alone often collapses to one column. */}
         <View
@@ -93,7 +81,6 @@ export default function CategoriesScreen() {
           ))}
         </View>
       </ScrollView>
-      <EmergencyButton />
     </View>
   );
 }

@@ -58,6 +58,18 @@ async function migrateRemoveTransportCategory(db: SQLiteDatabase): Promise<void>
 }
 
 /** Remove Rights & Welfare category + places. Runs once per install. */
+/** Remove deprecated local-only food status table (feedback is email-only now). */
+async function migrateDropPlaceStatusReportsTable(db: SQLiteDatabase): Promise<void> {
+  const row = await db.getFirstAsync<{ value: string }>(
+    "SELECT value FROM app_config WHERE key = 'migrate_drop_place_status_reports_v1'",
+  );
+  if (row?.value === '1') return;
+  await db.execAsync('DROP TABLE IF EXISTS place_status_reports');
+  await db.runAsync(
+    "INSERT OR REPLACE INTO app_config (key, value) VALUES ('migrate_drop_place_status_reports_v1', '1')",
+  );
+}
+
 async function migrateRemoveRightsCategory(db: SQLiteDatabase): Promise<void> {
   const row = await db.getFirstAsync<{ value: string }>(
     "SELECT value FROM app_config WHERE key = 'migrate_remove_rights_v1'",
@@ -76,11 +88,30 @@ async function migrateRemoveRightsCategory(db: SQLiteDatabase): Promise<void> {
   );
 }
 
+/** First launch can be slow; if native/sql work hangs, fail so Suspense can surface ErrorBoundary + Retry instead of an infinite spinner. */
+const INIT_TIMEOUT_MS = 120_000;
+
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const id = setTimeout(() => reject(new Error(`${label} timed out after ${ms / 1000}s`)), ms);
+    promise.then(
+      (v) => {
+        clearTimeout(id);
+        resolve(v);
+      },
+      (e) => {
+        clearTimeout(id);
+        reject(e);
+      },
+    );
+  });
+}
+
 /**
  * Schema + core SQL seed (categories, emergency, non-food places). Food rows come from
  * `seedDatabase()` (`PLACES_SEED`). Invoked from `SQLiteProvider` `onInit` in `app/_layout.tsx`.
  */
-export async function initDatabase(db: SQLiteDatabase): Promise<void> {
+async function runInitDatabase(db: SQLiteDatabase): Promise<void> {
   await db.execAsync(SCHEMA_SQL);
   await migratePlacesCoverColumn(db);
   await migratePlacesHealthcareColumns(db);
@@ -89,6 +120,7 @@ export async function initDatabase(db: SQLiteDatabase): Promise<void> {
   await migrateLearnPlaceColumns(db);
   await migrateRemoveTransportCategory(db);
   await migrateRemoveRightsCategory(db);
+  await migrateDropPlaceStatusReportsTable(db);
   const row = await db.getFirstAsync<{ c: number }>('SELECT COUNT(*) as c FROM places');
   if (row && row.c === 0) {
     await db.execAsync(SEED_SQL);
@@ -98,4 +130,8 @@ export async function initDatabase(db: SQLiteDatabase): Promise<void> {
   await seedStayDatabase(db);
   await seedLearnDatabase(db);
   await seedHygieneDatabase(db);
+}
+
+export async function initDatabase(db: SQLiteDatabase): Promise<void> {
+  await withTimeout(runInitDatabase(db), INIT_TIMEOUT_MS, 'Database initialization');
 }

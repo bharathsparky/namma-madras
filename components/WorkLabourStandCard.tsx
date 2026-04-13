@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import type { WorkPlace, WorkType } from '@/data/seeds/work';
+import type { WorkPlace } from '@/data/seeds/work';
 import { listingCardOutline, listingCardShell } from '@/constants/listingCardChrome';
 import { colors } from '@/constants/theme';
 import type { Lang } from '@/db/types';
@@ -16,16 +16,6 @@ type Props = {
   place: WorkPlace;
   lang: Lang;
   distanceKm?: number;
-};
-
-const WORK_TYPE_KEYS: Record<WorkType, string> = {
-  construction: 'workTypeConstruction',
-  loading_unloading: 'workTypeLoading',
-  domestic: 'workTypeDomestic',
-  all_types: 'workTypeAllTypes',
-  film_shoots: 'workTypeFilm',
-  govt_scheme: 'workTypeGovtScheme',
-  factory_industrial: 'workTypeFactory',
 };
 
 export function WorkLabourStandCard({ place, lang, distanceKm }: Props) {
@@ -82,15 +72,15 @@ export function WorkLabourStandCard({ place, lang, distanceKm }: Props) {
               </Text>
             </View>
             {hasCoords && distLabel ? (
-              <View className="mt-0.5 shrink-0 rounded-full border border-primary/22 bg-primary/[0.08] px-2.5 py-1.5">
-                <Text style={{ fontFamily: f.medium }} className="text-[12px] leading-4 text-primary">
+              <View className="mt-0.5 shrink-0 rounded-full border border-ink/14 bg-ink/[0.06] px-2.5 py-1.5">
+                <Text style={{ fontFamily: f.medium }} className="text-[12px] leading-4 text-ink-muted">
                   {distLabel}
                 </Text>
               </View>
             ) : null}
           </View>
 
-          <WorkPlaceBadges lang={lang} isGovt={place.is_govt} isFreeToUse={place.is_free_to_use} />
+          <WorkPlaceBadges lang={lang} isGovt={place.is_govt} />
         </View>
 
         <View className="mx-3 mt-1 rounded-xl bg-surface-inset/70 px-3.5 py-3">
@@ -121,31 +111,10 @@ export function WorkLabourStandCard({ place, lang, distanceKm }: Props) {
           </View>
         </View>
 
-        <View className="px-4 pb-1 pt-3">
-          <Text
-            style={{ fontFamily: f.medium }}
-            className="mb-2 text-[10px] uppercase tracking-[0.12em] text-ink-muted"
-          >
-            {t('hub.work.workTypesLabel')}
-          </Text>
-          <View className="flex-row flex-wrap gap-2">
-            {place.work_types.map((wt) => (
-              <View
-                key={`${place.id}-${wt}`}
-                className="rounded-full border border-ink/8 bg-surface-dark/80 px-3 py-1.5"
-              >
-                <Text style={{ fontFamily: f.medium }} className="text-[12px] leading-4 text-ink/90">
-                  {t(`hub.work.${WORK_TYPE_KEYS[wt]}`)}
-                </Text>
-              </View>
-            ))}
-          </View>
-        </View>
-
         {hasCoords ? (
-          <View className="flex-row items-center justify-center gap-2 border-t border-ink/[0.07] bg-ink/[0.02] px-4 py-3.5">
-            <Ionicons name="navigate" size={18} color={colors.primary} />
-            <Text style={{ fontFamily: f.bold }} className="text-[15px] text-primary">
+          <View className="mt-3 flex-row items-center justify-center gap-2 border-t border-ink/[0.07] bg-ink/[0.02] px-4 py-3.5">
+            <Ionicons name="navigate" size={18} color={colors.inkMuted} />
+            <Text style={{ fontFamily: f.bold }} className="text-[15px] text-ink">
               {t('hub.work.openDirections')}
             </Text>
           </View>

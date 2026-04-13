@@ -15,7 +15,7 @@ export function MedicalMentalHealthBanner({ lang }: { lang: Lang }) {
   const f = useFontFamily(lang);
 
   return (
-    <View className="rounded-2xl border border-primary/20 bg-surface-card-dark p-4">
+    <View className="rounded-2xl border border-ink/12 bg-surface-card-dark p-4">
       <Text style={{ fontFamily: f.medium }} className="text-sm leading-5 text-ink">
         {t('common.mentalHealthBanner')}
       </Text>
@@ -27,7 +27,7 @@ export function MedicalMentalHealthBanner({ lang }: { lang: Lang }) {
             className="min-h-[44px] min-w-[44px] rounded-xl border border-ink/10 bg-surface-inset/90 px-3 py-2 active:opacity-88"
             accessibilityRole="button"
           >
-            <Text style={{ fontFamily: f.bold }} className="text-xs text-primary">
+            <Text style={{ fontFamily: f.bold }} className="text-xs text-ink-muted">
               {pickTaEn(lang, r.labelTa, r.labelEn)}
             </Text>
             <Text style={{ fontFamily: f.medium }} className="text-sm text-ink">

@@ -59,7 +59,7 @@ export function OfflineMapGuard({ latitude, longitude, address, lang = 'en' }: P
           <Text style={{ fontFamily: f.medium }} className="mt-3 text-center text-[15px] leading-[22px] text-ink/88">
             {address}
           </Text>
-          <Text style={{ fontFamily: f.bold }} className="mt-4 text-[15px] text-primary">
+          <Text style={{ fontFamily: f.bold }} className="mt-4 text-[15px] text-ink">
             {t('common.directions')}
           </Text>
         </View>

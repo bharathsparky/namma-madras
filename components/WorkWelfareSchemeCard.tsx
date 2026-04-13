@@ -49,10 +49,10 @@ export function WorkWelfareSchemeCard({ place, lang }: Props) {
           {place.area}
         </Text>
 
-        <WorkPlaceBadges lang={lang} isGovt={place.is_govt} isFreeToUse={place.is_free_to_use} />
+        <WorkPlaceBadges lang={lang} isGovt={place.is_govt} />
 
-        <View className="mt-2 rounded-xl border border-primary/15 bg-primary/[0.06] px-3 py-2.5">
-          <Text style={{ fontFamily: f.medium }} className="text-[11px] uppercase tracking-[0.08em] text-primary">
+        <View className="mt-2 rounded-xl border border-ink/12 bg-ink/[0.04] px-3 py-2.5">
+          <Text style={{ fontFamily: f.medium }} className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">
             {t('hub.work.keyBenefit')}
           </Text>
           <Text style={{ fontFamily: f.regular }} className="mt-1.5 text-[14px] leading-5 text-ink/92">

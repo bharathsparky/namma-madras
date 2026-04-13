@@ -11,7 +11,6 @@ export default function OnboardingLayout() {
       }}
     >
       <Stack.Screen name="language" />
-      <Stack.Screen name="persona" />
       <Stack.Screen name="permissions" />
     </Stack>
   );

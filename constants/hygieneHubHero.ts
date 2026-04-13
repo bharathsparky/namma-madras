@@ -3,7 +3,7 @@ import { colors } from '@/constants/theme';
 
 /**
  * Hygiene hub — cool teal / water tone, distinct from medical green.
- * Hero art: `hub-hygiene-hero-banner.png` (hygiene kit flat-lay); shared with category grid tile.
+ * Hero art: `category-hygiene-shower.webp` — shower / bath; shared with category grid tile.
  */
 export const hygieneHubHero = {
   textPanel: '#2A4A52',
@@ -26,4 +26,6 @@ export const hygieneHubHero = {
   heroPanelTopSeparator: false,
   illustrationBottomBlendHeightPx: 118,
   heroBannerBottomEdge: false,
+  /** Warm dusk mesh is invisible on teal — use cool cyan wash in hero + panel. */
+  bannerNoiseVariant: 'cool',
 } as const satisfies SuperAppHeroTheme;

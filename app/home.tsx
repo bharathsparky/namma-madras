@@ -1,81 +1,93 @@
-import { router, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { setStatusBarStyle } from 'expo-status-bar';
-import { useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { CategoryHubBody } from '@/components/CategoryHubBody';
-import { EmergencyButton } from '@/components/EmergencyButton';
-import { HomeSuperAppHero } from '@/components/HomeSuperAppHero';
+import { useSQLiteContext } from 'expo-sqlite';
+import { useCallback, useMemo, useState } from 'react';
+import { Platform, ScrollView, StatusBar as RNStatusBar, View } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { HomeHubSwitcher } from '@/components/HomeHubSwitcher';
+import {
+  HomeMarketplaceCategoryStrip,
+  HomeMarketplaceGreetingBar,
+  HomeMarketplaceSearchPanel,
+  useMarketplaceChromeLayout,
+} from '@/components/HomeMarketplaceChrome';
 import { ReceptionHallHintBanner } from '@/components/ReceptionHallHintBanner';
-import { useLiveClock } from '@/hooks/useLiveClock';
+import { marketplaceStatusBarTint } from '@/constants/asphalt';
+import { getCategories } from '@/db/queries';
+import { useHomeCategorySwipePan } from '@/hooks/useHomeCategorySwipePan';
 import { useReceptionHallHint } from '@/hooks/useReceptionHallHint';
 import { useLanguageStore } from '@/stores/languageStore';
-import { getHomeContext } from '@/utils/homeContext';
-import { localeForLang } from '@/utils/localeForLang';
 
-/** Extra scroll padding for floating emergency FAB (no tab bar). */
-const SCROLL_PAD_FAB = 80;
+/** Bottom scroll padding (no tab bar; no floating SOS on this screen). */
+const SCROLL_PAD_BOTTOM = 32;
 
 export default function HomeScreen() {
-  const { t } = useTranslation();
   const lang = useLanguageStore((s) => s.language);
   const insets = useSafeAreaInsets();
-  const now = useLiveClock(30000);
-  const ctx = useMemo(() => getHomeContext(now), [now]);
+  const db = useSQLiteContext();
+  const [activeSlug, setActiveSlug] = useState('food');
 
-  const heroGreeting = t(`home.heroGreeting.${ctx}`);
-  const heroTime = useMemo(
-    () =>
-      now.toLocaleTimeString(localeForLang(lang), {
-        hour: 'numeric',
-        minute: '2-digit',
-      }),
-    [now, lang],
-  );
-  const heroTimeA11y = t('home.heroTimeA11y', { time: heroTime });
+  const categorySlugs = useMemo(() => getCategories(db).map((c) => c.slug), [db]);
+
+  const onSelectCategory = useCallback((slug: string) => {
+    setActiveSlug(slug);
+  }, []);
+
+  const hubSwipePanHandlers = useHomeCategorySwipePan(categorySlugs, activeSlug, onSelectCategory);
+
+  const { hint: receptionHint, dismiss: dismissReceptionHint } = useReceptionHallHint();
+
+  const marketplaceLayout = useMarketplaceChromeLayout();
 
   useFocusEffect(
     useCallback(() => {
       setStatusBarStyle('light');
-      return () => setStatusBarStyle('dark');
+      if (Platform.OS === 'android') {
+        RNStatusBar.setBackgroundColor(marketplaceStatusBarTint);
+        RNStatusBar.setTranslucent(false);
+      }
+      return () => {
+        setStatusBarStyle('dark');
+        if (Platform.OS === 'android') {
+          RNStatusBar.setBackgroundColor('transparent');
+          RNStatusBar.setTranslucent(true);
+        }
+      };
     }, []),
   );
 
-  const { hint: receptionHint, dismiss: dismissReceptionHint } = useReceptionHallHint();
-
   return (
-    <View className="flex-1 bg-surface-dark">
+    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: 'transparent' }}>
       <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: insets.bottom + SCROLL_PAD_FAB }}
-        keyboardShouldPersistTaps="never"
+        className="flex-1 bg-transparent"
+        contentContainerStyle={{ paddingBottom: insets.bottom + SCROLL_PAD_BOTTOM }}
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        stickyHeaderIndices={[1]}
+        scrollEventThrottle={16}
+        nestedScrollEnabled
       >
-        <HomeSuperAppHero
+        <HomeMarketplaceGreetingBar lang={lang} topInsetMode="belowStatusBar" compactStrip />
+        <HomeMarketplaceCategoryStrip
           lang={lang}
-          greetingLine={heroGreeting}
-          timeLine={heroTime}
-          timeAccessibilityLabel={heroTimeA11y}
-          tagline={t('home.heroTagline')}
-          illustrationResizeMode="cover"
-          onCategoriesPress={() => router.push('/categories')}
-          categoriesA11yLabel={t('tabs.categories')}
-          categoriesA11yHint={t('home.heroBrowseA11y')}
-          onSavedPress={() => router.push('/saved')}
-          savedA11yLabel={t('saved.title')}
-          savedA11yHint={t('home.heroSavedA11y')}
-          onSettings={() => router.push('/settings')}
-          settingsLabel={t('common.settings')}
+          activeSlug={activeSlug}
+          onSelectSlug={onSelectCategory}
+          layout={marketplaceLayout}
+          compactStrip
         />
-
-        {receptionHint ? (
+        <HomeMarketplaceSearchPanel lang={lang} />
+        {activeSlug === 'food' && receptionHint ? (
           <ReceptionHallHintBanner lang={lang} hint={receptionHint} onDismiss={dismissReceptionHint} />
         ) : null}
-
-        <CategoryHubBody categoryId={1} lang={lang} listCopyNs="home" />
+        <View {...hubSwipePanHandlers} collapsable={false}>
+          <HomeHubSwitcher
+            slug={activeSlug}
+            lang={lang}
+            bottomInset={insets.bottom}
+            nestInParentScroll
+          />
+        </View>
       </ScrollView>
-      <EmergencyButton />
-    </View>
+    </SafeAreaView>
   );
 }

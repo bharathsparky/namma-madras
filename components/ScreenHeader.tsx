@@ -40,8 +40,8 @@ export function ScreenHeader({
         brand
           ? 'z-10 bg-primary px-4 pb-3'
           : light
-            ? 'z-10 bg-[#F8F7F5] px-4 pb-3'
-            : 'z-10 border-b border-primary/15 bg-surface-dark px-4 pb-4'
+            ? 'z-10 bg-surface-dark px-4 pb-3'
+            : 'z-10 border-b border-ink/10 bg-surface-dark px-4 pb-4'
       }
       style={
         brand

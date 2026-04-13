@@ -22,20 +22,20 @@ export function LearnQuickTipCard({ lang }: Props) {
 
   return (
     <View
-      className="mb-4 rounded-xl border border-primary/18 bg-primary/[0.07] px-3.5 py-3"
+      className="mb-4 rounded-xl border border-ink/12 bg-ink/[0.04] px-3.5 py-3"
       accessibilityRole="summary"
       accessibilityLabel={body}
     >
       <View className="flex-row items-start gap-2.5">
         <View
           className="mt-0.5 h-9 w-9 items-center justify-center rounded-xl"
-          style={{ backgroundColor: ui.primaryWash }}
+          style={{ backgroundColor: ui.neutralWash }}
           accessibilityElementsHidden
         >
-          <Ionicons name="bulb-outline" size={20} color={colors.primary} />
+          <Ionicons name="bulb-outline" size={20} color={colors.inkMuted} />
         </View>
         <View className="min-w-0 flex-1">
-          <Text style={{ fontFamily: f.bold }} className="text-[12px] uppercase tracking-[0.08em] text-primary">
+          <Text style={{ fontFamily: f.bold }} className="text-[12px] uppercase tracking-[0.08em] text-ink-muted">
             {t('hub.learn.quickTip')}
           </Text>
           <Text style={{ fontFamily: f.regular }} className="mt-1 text-[14px] leading-[21px] text-ink">

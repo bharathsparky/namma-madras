@@ -11,7 +11,6 @@ import { LearnHubBody } from '@/components/LearnHubBody';
 import { StayHubBody } from '@/components/StayHubBody';
 import { WorkHubBody } from '@/components/WorkHubBody';
 import { HygieneHubBody } from '@/components/HygieneHubBody';
-import { EmergencyButton } from '@/components/EmergencyButton';
 import { HomeSuperAppHero } from '@/components/HomeSuperAppHero';
 import { getCategoryHubVisual } from '@/constants/categoryHubVisual';
 import { getCategoryBySlug } from '@/db/queries';
@@ -20,7 +19,7 @@ import { useLanguageStore } from '@/stores/languageStore';
 import { getHomeContext } from '@/utils/homeContext';
 import { localeForLang } from '@/utils/localeForLang';
 
-const SCROLL_PAD_FAB = 80;
+const SCROLL_PAD_BOTTOM = 32;
 
 type Props = { slug: string };
 
@@ -73,7 +72,7 @@ export function HubCategoryScreen({ slug }: Props) {
 
   if (slug === 'hygiene') {
     return (
-      <View className="flex-1 bg-surface-dark">
+      <View className="flex-1 bg-transparent">
         <HygieneHubBody
           categoryId={category.id}
           lang={lang}
@@ -88,9 +87,12 @@ export function HubCategoryScreen({ slug }: Props) {
               theme={visual.theme}
               illustrationSource={visual.illustration}
               illustrationResizeMode={visual.illustrationResizeMode}
-              onCategoriesPress={() => router.push('/categories')}
-              categoriesA11yLabel={t('tabs.categories')}
-              categoriesA11yHint={t('home.heroBrowseA11y')}
+              quickAction={{
+                mode: 'categories',
+                onPress: () => router.push('/categories'),
+                accessibilityLabel: t('tabs.categories'),
+                accessibilityHint: t('home.heroBrowseA11y'),
+              }}
               onSavedPress={() => router.push('/saved')}
               savedA11yLabel={t('saved.title')}
               savedA11yHint={t('home.heroSavedA11y')}
@@ -99,16 +101,15 @@ export function HubCategoryScreen({ slug }: Props) {
             />
           }
         />
-        <EmergencyButton />
       </View>
     );
   }
 
   return (
-    <View className="flex-1 bg-surface-dark">
+    <View className="flex-1 bg-transparent">
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ paddingBottom: insets.bottom + SCROLL_PAD_FAB }}
+        contentContainerStyle={{ paddingBottom: insets.bottom + SCROLL_PAD_BOTTOM }}
         keyboardShouldPersistTaps="never"
         showsVerticalScrollIndicator={false}
       >
@@ -121,9 +122,12 @@ export function HubCategoryScreen({ slug }: Props) {
           theme={visual.theme}
           illustrationSource={visual.illustration}
           illustrationResizeMode={visual.illustrationResizeMode}
-          onCategoriesPress={() => router.push('/categories')}
-          categoriesA11yLabel={t('tabs.categories')}
-          categoriesA11yHint={t('home.heroBrowseA11y')}
+          quickAction={{
+            mode: 'categories',
+            onPress: () => router.push('/categories'),
+            accessibilityLabel: t('tabs.categories'),
+            accessibilityHint: t('home.heroBrowseA11y'),
+          }}
           onSavedPress={() => router.push('/saved')}
           savedA11yLabel={t('saved.title')}
           savedA11yHint={t('home.heroSavedA11y')}
@@ -143,7 +147,6 @@ export function HubCategoryScreen({ slug }: Props) {
           <CategoryHubBody categoryId={category.id} lang={lang} listCopyNs={`hub.${slug}`} />
         )}
       </ScrollView>
-      <EmergencyButton />
     </View>
   );
 }

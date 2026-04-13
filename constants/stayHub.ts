@@ -1,5 +1,5 @@
 /**
- * Stay hub amber / reality-banner colors as plain RN values.
+ * Stay place-detail amber ticket colors as plain RN values.
  * NativeWind often fails on `border-[#hex]/opacity` and `bg-[#hex]/opacity` (slash on arbitrary hex).
  */
 export const STAY_AMBER_TICKET = {
@@ -11,8 +11,3 @@ export const STAY_AMBER_TICKET = {
   icon: '#A67C00',
 } as const;
 
-export const STAY_REALITY_BANNER = {
-  borderColor: 'rgba(196, 165, 116, 0.35)',
-  background: '#FDF6E8',
-  icon: '#B8860B',
-} as const;

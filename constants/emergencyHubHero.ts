@@ -3,7 +3,7 @@ import { colors } from '@/constants/theme';
 
 /**
  * Emergency hub — deep plum with emergency accent (#E23744) echo; readable white-on-panel.
- * Hero art: `hub-emergency-hero-banner.png` (emergency preparedness flat-lay); shared with category grid tile.
+ * Hero art: `category-emergency-phone-booth.webp` — phone booth / help; shared with category grid tile.
  */
 export const emergencyHubHero = {
   textPanel: '#3D2E34',

@@ -1085,6 +1085,6 @@ export const STAY_NOTES = {
   gcc_hospital: 12,
   gcc_contact_en: 'Call GCC Overall Coordinator 9445190472 if unsure which shelter to go to.',
   gcc_contact_ta: 'எந்த தங்குமிடம் செல்வது என்று தெரியாவிட்டால் GCC ஒருங்கிணைப்பாளரை அழைக்கவும்: 9445190472',
-  reality_check_en: 'GCC shelters have 30-person capacity. They may be full. Always call ahead. If full, the coordinator can redirect you to another shelter.',
-  reality_check_ta: 'GCC தங்குமிடங்கள் 30 பேர் கொள்ளளவு மட்டுமே. நிரம்பியிருக்கலாம். முன்னதாக அழைக்கவும்.',
+  reality_check_en: 'Unsure which shelter to use? Call ahead — the coordinator can guide you.',
+  reality_check_ta: 'எந்த இல்லம் என்று தெரியவில்லையா? முன் அழைத்து கேளுங்கள் — ஒருங்கிணைப்பாளர் வழிகாட்டுவார்.',
 }

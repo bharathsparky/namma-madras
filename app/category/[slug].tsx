@@ -16,6 +16,7 @@ import { useLanguageStore } from '@/stores/languageStore';
 import { colors } from '@/constants/theme';
 import { normalizeRouteSlugParam } from '@/utils/routeSlug';
 import { pickTaEn } from '@/utils/pickTaEn';
+import { FILTER_PILL_SQUIRCLE } from '@/constants/listToolbar';
 import { hubPlaceCardRows } from '@/utils/hubPlaceCardRows';
 
 export default function CategorySlugScreen() {
@@ -58,10 +59,10 @@ export default function CategorySlugScreen() {
 
   if (!category) {
     return (
-      <View className="flex-1 items-center justify-center bg-surface-dark">
+      <View className="flex-1 items-center justify-center bg-transparent">
         <Text className="text-base text-ink-muted">{t('categoriesScreen.unknownCategory')}</Text>
         <Pressable onPress={() => router.back()} className="mt-4">
-          <Text className="text-primary">{t('common.back')}</Text>
+          <Text className="text-ink">{t('common.back')}</Text>
         </Pressable>
       </View>
     );
@@ -70,7 +71,7 @@ export default function CategorySlugScreen() {
   const title = pickTaEn(lang, category.label_ta, category.label_en);
 
   return (
-    <View className="flex-1 bg-surface-dark">
+    <View className="flex-1 bg-transparent">
       <ScreenHeader
         title={title}
         lang={lang}
@@ -92,8 +93,9 @@ export default function CategorySlugScreen() {
           <View className="mt-3 flex-row gap-3">
             <Pressable
               onPress={() => setFreeOnly(false)}
-              className={`min-h-[44px] flex-1 items-center justify-center rounded-lg border px-2 ${
-                !freeOnly ? 'border-primary bg-primary/18' : 'border-ink/12'
+              style={FILTER_PILL_SQUIRCLE}
+              className={`min-h-[44px] flex-1 items-center justify-center overflow-hidden border px-2 ${
+                !freeOnly ? 'border-ink/22 bg-ink/[0.08]' : 'border-ink/12'
               }`}
             >
               <Text style={{ fontFamily: f.medium }} className="text-sm text-ink/86">
@@ -102,8 +104,9 @@ export default function CategorySlugScreen() {
             </Pressable>
             <Pressable
               onPress={() => setFreeOnly(true)}
-              className={`min-h-[44px] flex-1 items-center justify-center rounded-lg border px-2 ${
-                freeOnly ? 'border-primary bg-primary/18' : 'border-ink/12'
+              style={FILTER_PILL_SQUIRCLE}
+              className={`min-h-[44px] flex-1 items-center justify-center overflow-hidden border px-2 ${
+                freeOnly ? 'border-ink/22 bg-ink/[0.08]' : 'border-ink/12'
               }`}
             >
               <Text style={{ fontFamily: f.medium }} className="text-sm text-ink/86">
@@ -124,6 +127,7 @@ export default function CategorySlugScreen() {
             distanceKm={distanceKm}
             etaMinutes={etaMinutes}
             deemphasized={false}
+            surface="listRow"
             onPress={() => router.push(`/place/${place.id}`)}
           />
         ))}

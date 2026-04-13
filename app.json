@@ -2,7 +2,7 @@
   "expo": {
     "name": "Namma Madras",
     "slug": "namma-madras",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "namma-madras",
@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "description": "வந்தாரை வாழவைக்கும் சென்னை",
     "splash": {
-      "backgroundColor": "#F3F4F6"
+      "backgroundColor": "#FAF8F5"
     },
     "ios": {
       "supportsTablet": true,
@@ -18,10 +18,10 @@
     },
     "android": {
       "package": "com.nammamadras.app",
-      "versionCode": 1,
+      "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#C5E8F7"
+        "backgroundColor": "#E5EEEA"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,

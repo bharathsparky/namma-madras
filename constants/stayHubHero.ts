@@ -2,8 +2,8 @@ import type { SuperAppHeroTheme } from '@/constants/homeHero';
 import { colors } from '@/constants/theme';
 
 /**
- * Stay hub: text panel stays in the blue “shelter” family; hero art is a wide shelter essentials flat-lay (trunk, towels, guide).
- * `hub-stay-hero-illustration.png` — shared with category grid tile; wide banner uses `cover` in `categoryHubVisual`.
+ * Stay hub: text panel stays in the blue “shelter” family; hero art is the shared-room / beds scene.
+ * `category-stay-room.webp` — category tile + stay hub hero (`cover` in `categoryHubVisual`).
  */
 export const stayHubHero = {
   textPanel: '#2E4A63',

@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import { HubFilterPill } from '@/components/HubFilterPill';
+import { HUB_FILTER_SCROLL_CONTENT_STYLE } from '@/constants/listToolbar';
 import type { Lang } from '@/db/types';
-import { useFontFamily } from '@/hooks/useFontFamily';
 
 export type HygieneHubFilterId =
   | 'all'
@@ -39,47 +40,26 @@ type Props = {
 
 export function HygieneHubFilterBar({ lang, selected, onSelect, listCopyNs }: Props) {
   const { t } = useTranslation();
-  const f = useFontFamily(lang);
   const k = (key: string) => `${listCopyNs}.${key}`;
 
   return (
-    <View className="mb-3 w-full">
+    <View className="w-full">
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 8,
-          paddingHorizontal: 20,
-          paddingVertical: 4,
-        }}
+        contentContainerStyle={HUB_FILTER_SCROLL_CONTENT_STYLE}
         accessibilityRole="scrollbar"
         accessibilityLabel={t(k('filterBarA11y'))}
       >
-        {ORDER.map((id) => {
-          const on = selected === id;
-          const label = t(k(LABEL_KEY[id]));
-          return (
-            <Pressable
-              key={id}
-              onPress={() => onSelect(id)}
-              accessibilityRole="button"
-              accessibilityState={{ selected: on }}
-              className={`shrink-0 rounded-full border px-3.5 py-2.5 active:opacity-90 ${
-                on ? 'border-primary bg-primary/12' : 'border-ink/12 bg-surface-inset/90'
-              }`}
-            >
-              <Text
-                style={{ fontFamily: f.medium }}
-                className={`text-[13px] leading-[18px] ${on ? 'text-primary' : 'text-ink'}`}
-                numberOfLines={1}
-              >
-                {label}
-              </Text>
-            </Pressable>
-          );
-        })}
+        {ORDER.map((id) => (
+          <HubFilterPill
+            key={id}
+            lang={lang}
+            selected={selected === id}
+            label={t(k(LABEL_KEY[id]))}
+            onPress={() => onSelect(id)}
+          />
+        ))}
       </ScrollView>
     </View>
   );

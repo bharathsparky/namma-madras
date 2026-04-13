@@ -50,8 +50,8 @@ function SettingsNavRow({
       accessibilityLabel={hint ? `${label}. ${hint}` : label}
       className="min-h-[52px] flex-row items-center gap-3 rounded-2xl border border-ink/[0.08] bg-surface-card-dark px-3.5 py-2.5 active:bg-ink/[0.04]"
     >
-      <View className="h-10 w-10 items-center justify-center rounded-full bg-primary/12">
-        <Ionicons name={icon} size={20} color={colors.primary} />
+      <View className="h-10 w-10 items-center justify-center rounded-full bg-ink/[0.08]">
+        <Ionicons name={icon} size={20} color={colors.inkMuted} />
       </View>
       <View className="min-w-0 flex-1">
         <Text style={{ fontFamily: f.medium }} className="text-[15px] leading-5 text-ink" numberOfLines={2}>
@@ -85,11 +85,11 @@ export default function SettingsScreen() {
   };
 
   return (
-    <View className="flex-1 bg-surface-dark">
+    <View className="flex-1 bg-transparent">
       <ScreenHeader
         title={t('settings.title')}
         lang={lang}
-        variant="brand"
+        variant="surface"
         onBackPress={() => router.back()}
       />
       <ScrollView
@@ -109,12 +109,12 @@ export default function SettingsScreen() {
               accessibilityLabel={t('a11y.switchTamil')}
               accessibilityState={{ selected: lang === 'ta' }}
               className={`min-h-[48px] min-w-[31%] flex-1 items-center justify-center rounded-xl border-2 ${
-                lang === 'ta' ? 'border-primary bg-primary/10' : 'border-ink/10 bg-surface-inset/50'
+                lang === 'ta' ? 'border-ink/25 bg-surface-inset' : 'border-ink/10 bg-surface-inset/50'
               } active:opacity-90`}
             >
               <Text
                 style={{ fontFamily: f.bold }}
-                className={`text-base ${lang === 'ta' ? 'text-primary' : 'text-ink'}`}
+                className="text-base text-ink"
               >
                 தமிழ்
               </Text>
@@ -125,12 +125,12 @@ export default function SettingsScreen() {
               accessibilityLabel={t('a11y.switchEnglish')}
               accessibilityState={{ selected: lang === 'en' }}
               className={`min-h-[48px] min-w-[31%] flex-1 items-center justify-center rounded-xl border-2 ${
-                lang === 'en' ? 'border-primary bg-primary/10' : 'border-ink/10 bg-surface-inset/50'
+                lang === 'en' ? 'border-ink/25 bg-surface-inset' : 'border-ink/10 bg-surface-inset/50'
               } active:opacity-90`}
             >
               <Text
                 style={{ fontFamily: f.bold }}
-                className={`text-base ${lang === 'en' ? 'text-primary' : 'text-ink'}`}
+                className="text-base text-ink"
               >
                 English
               </Text>
@@ -141,12 +141,12 @@ export default function SettingsScreen() {
               accessibilityLabel={t('a11y.switchHindi')}
               accessibilityState={{ selected: lang === 'hi' }}
               className={`min-h-[48px] min-w-[31%] flex-1 items-center justify-center rounded-xl border-2 ${
-                lang === 'hi' ? 'border-primary bg-primary/10' : 'border-ink/10 bg-surface-inset/50'
+                lang === 'hi' ? 'border-ink/25 bg-surface-inset' : 'border-ink/10 bg-surface-inset/50'
               } active:opacity-90`}
             >
               <Text
                 style={{ fontFamily: f.bold }}
-                className={`text-base ${lang === 'hi' ? 'text-primary' : 'text-ink'}`}
+                className="text-base text-ink"
               >
                 हिन्दी
               </Text>
@@ -165,7 +165,7 @@ export default function SettingsScreen() {
             <Switch
               value={tamilNumerals}
               onValueChange={(next) => void setTamilNumerals(next)}
-              trackColor={{ false: colors.surfaceInset, true: colors.primary }}
+              trackColor={{ false: colors.surfaceInset, true: colors.ink }}
               thumbColor={Platform.OS === 'android' ? (tamilNumerals ? colors.onPrimary : ui.switchThumbOff) : undefined}
               ios_backgroundColor={colors.surfaceInset}
               accessibilityLabel={t('common.tamilNumerals')}
@@ -211,7 +211,7 @@ export default function SettingsScreen() {
                 {t('settings.privacyRowSub')}
               </Text>
             </View>
-            <Ionicons name="information-circle-outline" size={22} color={colors.primary} />
+            <Ionicons name="information-circle-outline" size={22} color={colors.inkMuted} />
           </Pressable>
 
           <Text

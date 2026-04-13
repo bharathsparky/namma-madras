@@ -17,9 +17,13 @@ export const usePersonaStore = create<State>((set) => ({
     set({ persona });
   },
   hydrate: async () => {
-    const stored = await AsyncStorage.getItem(KEY);
-    const valid: Persona[] = ['crisis', 'migrant', 'student', 'jobseeker', 'helper', ''];
-    const persona = valid.includes(stored as Persona) ? (stored as Persona) : '';
-    set({ persona });
+    try {
+      const stored = await AsyncStorage.getItem(KEY);
+      const valid: Persona[] = ['crisis', 'migrant', 'student', 'jobseeker', 'helper', ''];
+      const persona = valid.includes(stored as Persona) ? (stored as Persona) : '';
+      set({ persona });
+    } catch {
+      set({ persona: '' });
+    }
   },
 }));

@@ -12,7 +12,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { SQLiteProvider } from 'expo-sqlite';
 import { Suspense, useEffect } from 'react';
-import { ActivityIndicator, LogBox, View } from 'react-native';
+import { ActivityIndicator, LogBox, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
@@ -22,6 +22,7 @@ import { useOnboardingStore } from '@/stores/onboardingStore';
 import { usePersonaStore } from '@/stores/personaStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 
+import { SurfaceGrainOverlay } from '@/components/SurfaceGrainOverlay';
 import { colors } from '@/constants/theme';
 import '../global.css';
 
@@ -36,17 +37,35 @@ export const unstable_settings = {
 function LoadingScreen() {
   return (
     <View
-      style={{
-        flex: 1,
-        backgroundColor: colors.surfaceDark,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
+      style={styles.loadingRoot}
+      accessibilityRole="progressbar"
+      accessibilityLabel="Loading"
     >
-      <ActivityIndicator size="large" color={colors.primary} />
+      <SurfaceGrainOverlay />
+      <ActivityIndicator size="large" color={colors.inkMuted} />
+      <Text
+        style={{
+          color: 'rgba(255,255,255,0.55)',
+          fontSize: 14,
+          textAlign: 'center',
+        }}
+      >
+        Setting up… first launch can take a moment.
+      </Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingRoot: {
+    flex: 1,
+    backgroundColor: colors.surfaceDark,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 16,
+    paddingHorizontal: 24,
+  },
+});
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -56,6 +75,10 @@ export default function RootLayout() {
     MuktaMalar_400Regular,
     MuktaMalar_500Medium,
     MuktaMalar_700Bold,
+    /** English — Proxima Nova (`assets/fonts/ProximaNova-*.ttf`). */
+    ProximaNova_400Regular: require('../assets/fonts/ProximaNova-Regular.ttf'),
+    ProximaNova_600SemiBold: require('../assets/fonts/ProximaNova-Semibold.ttf'),
+    ProximaNova_700Bold: require('../assets/fonts/ProximaNova-Bold.ttf'),
   });
 
   useEffect(() => {
@@ -101,12 +124,13 @@ function RootNav() {
   }, [hydrateLang, hydrateOnboarding, hydratePersona, hydrateSettings]);
 
   return (
-    <>
+    <View style={{ flex: 1, backgroundColor: colors.surfaceDark }}>
+      <SurfaceGrainOverlay />
       <StatusBar style="dark" />
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: colors.surfaceDark },
+          contentStyle: { backgroundColor: 'transparent' },
           animation: 'none',
         }}
       >
@@ -123,6 +147,6 @@ function RootNav() {
         <Stack.Screen name="settings" options={{ presentation: 'modal', animation: 'none' }} />
         <Stack.Screen name="search" />
       </Stack>
-    </>
+    </View>
   );
 }

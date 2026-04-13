@@ -1,24 +1,33 @@
 /** @type {import('tailwindcss').Config} */
-/** Asphalt Aloha Green (consumer) — brand #00AA13, 4px grid, tinted neutrals (no pure #000/#fff). */
+/** App theme — brand primary #00695C, warm cream canvas, brown-gray ink, 4px grid. */
 module.exports = {
-  content: ['./app/**/*.{js,jsx,ts,tsx}', './components/**/*.{js,jsx,ts,tsx}'],
+  content: [
+    './app/**/*.{js,jsx,ts,tsx}',
+    './components/**/*.{js,jsx,ts,tsx}',
+    './src/**/*.{js,jsx,ts,tsx}',
+  ],
   presets: [require('nativewind/preset')],
   theme: {
     extend: {
       colors: {
-        primary: '#00AA13',
-        'primary-dim': '#008F0F',
+        primary: '#00695C',
+        'primary-dim': '#004D40',
+        'ink-brand-teal': '#0E3D36',
         'on-primary': '#FFFFFF',
-        ink: '#101010',
-        'ink-muted': '#5C5F62',
-        'ink-faint': '#8A8D91',
-        'surface-dark': '#F3F4F6',
+        ink: '#1F1C1A',
+        'ink-muted': '#5E5854',
+        'ink-faint': '#8A837D',
+        'surface-dark': '#FAF8F5',
         'surface-card-dark': '#FFFFFF',
-        'surface-inset': '#E8EAED',
+        'surface-inset': '#EDE8E2',
+        'selected-surface': '#E3E0DB',
+        'primary-wash-solid': '#E8E5E0',
+        'chip-ring-warm': '#FFF7F0',
+        'marketplace-status-bar': '#0A2E29',
         accent: '#E23744',
         'accent-deep': '#C62A36',
         emergency: '#E23744',
-        'badge-free': '#008F0F',
+        'badge-free': '#00695C',
         'badge-subsidised': '#B8890F',
         'badge-open': '#1F8A4A',
         'badge-closed': '#C73D38',

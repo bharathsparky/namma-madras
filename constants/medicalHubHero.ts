@@ -3,7 +3,7 @@ import { colors } from '@/constants/theme';
 
 /**
  * Medical hub — deep green panels aligned with category medical accent (#2A9B62).
- * Hero art: `hub-medical-hero-banner.png` (wide first-aid / medical kit flat-lay); shared with category grid tile.
+ * Hero art: `category-medical-ambulance.webp` — ambulance scene; shared with category grid tile.
  */
 export const medicalHubHero = {
   textPanel: '#1E4D3A',

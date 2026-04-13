@@ -16,8 +16,6 @@ const ARROW_ICON_SIZE = 15;
 /** Square art — illustration fills via cover (slight zoom / crop edges). */
 const IMAGE_ASPECT = 1;
 
-const ACCENT_CTA_SLUGS = new Set(['food', 'emergency']);
-
 type Props = {
   category: CategoryRow;
   lang: Lang;
@@ -31,7 +29,7 @@ export function CategoryGridPromoCard({ category, lang, tileWidth, onPress }: Pr
   const label = pickTaEn(lang, category.label_ta, category.label_en);
   const slug = category.slug;
   const tileSource = categoryTileImageForSlug(slug);
-  const ctaBg = ACCENT_CTA_SLUGS.has(slug) ? colors.accent : colors.primary;
+  const ctaBg = colors.primary;
 
   return (
     <Pressable

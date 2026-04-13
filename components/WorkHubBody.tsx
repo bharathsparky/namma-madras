@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useSQLiteContext } from 'expo-sqlite';
+import { ListSearchButton } from '@/components/ListSearchButton';
 import { SectionHeading } from '@/components/SectionHeading';
 import { WorkLabourFilterBar } from '@/components/WorkLabourFilterBar';
 import { WorkLabourSafetyBanner } from '@/components/WorkLabourSafetyBanner';
@@ -9,12 +11,15 @@ import { WorkMinimumWagesExpandable } from '@/components/WorkMinimumWagesExpanda
 import { WorkRegistrationGuideCard } from '@/components/WorkRegistrationGuideCard';
 import { WorkWelfareSchemeCard } from '@/components/WorkWelfareSchemeCard';
 import { getGovtSchemes, getLabourStands } from '@/data/seeds/work';
-import { haversineKm } from '@/db/queries';
+import { getCategoryById, haversineKm } from '@/db/queries';
 import type { Lang } from '@/db/types';
 import { useFontFamily } from '@/hooks/useFontFamily';
 import { useLocationStore } from '@/stores/locationStore';
 import { sortWorkPlacesByDistance } from '@/utils/workHubSort';
 import { filterLabourStands, type WorkLabourFilterId } from '@/utils/workLabourFilters';
+import { pickTaEn } from '@/utils/pickTaEn';
+
+const WORK_CATEGORY_ID = 5;
 
 type Props = {
   lang: Lang;
@@ -23,6 +28,7 @@ type Props = {
 
 export function WorkHubBody({ lang, listCopyNs }: Props) {
   const { t } = useTranslation();
+  const db = useSQLiteContext();
   const lat = useLocationStore((s) => s.latitude);
   const lon = useLocationStore((s) => s.longitude);
   const [labourFilter, setLabourFilter] = useState<WorkLabourFilterId>('all');
@@ -51,18 +57,32 @@ export function WorkHubBody({ lang, listCopyNs }: Props) {
   const k = (key: string) => `${listCopyNs}.${key}`;
   const f = useFontFamily(lang);
 
+  const workCategoryRow = useMemo(() => getCategoryById(db, WORK_CATEGORY_ID), [db]);
+
   return (
-    <View className="px-4 pt-2 pb-1">
+    <View className="px-4 pb-1 pt-4">
       <WorkLabourSafetyBanner lang={lang} />
 
-      <SectionHeading
-        lang={lang}
-        overline={t(k('labourOverline'))}
-        title={t(k('labourTitle'))}
-        className="mb-2 mt-1"
-      />
+      <View className="mt-3 gap-3">
+        <SectionHeading
+          lang={lang}
+          overline={t(k('labourOverline'))}
+          title={t(k('labourTitle'))}
+          className="mb-0"
+          right={
+            workCategoryRow ? (
+              <ListSearchButton
+                categoryId={WORK_CATEGORY_ID}
+                accessibilityLabel={t('home.listSearchA11yScoped', {
+                  category: pickTaEn(lang, workCategoryRow.label_ta, workCategoryRow.label_en),
+                })}
+              />
+            ) : null
+          }
+        />
 
-      <WorkLabourFilterBar lang={lang} selected={labourFilter} onSelect={setLabourFilter} />
+        <WorkLabourFilterBar lang={lang} selected={labourFilter} onSelect={setLabourFilter} />
+      </View>
 
       {standsWithDistance.length > 0 ? (
         standsWithDistance.map(({ place, distanceKm }) => (

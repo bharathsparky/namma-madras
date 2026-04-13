@@ -11,6 +11,7 @@ export default function OnboardLayout() {
       }}
     >
       <Stack.Screen name="index" />
+      <Stack.Screen name="language" />
       <Stack.Screen name="persona" />
       <Stack.Screen name="permissions" />
     </Stack>

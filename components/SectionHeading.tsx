@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import type { Lang } from '@/db/types';
 import { useFontFamily } from '@/hooks/useFontFamily';
@@ -10,22 +11,25 @@ export function SectionHeading({
   overline,
   lang,
   className = '',
+  right,
 }: {
   title: string;
   overline?: string;
   lang: Lang;
   /** e.g. mt-6 vs mt-8 */
   className?: string;
+  /** e.g. list search — aligned to top-right of the heading block */
+  right?: ReactNode;
 }) {
   const f = useFontFamily(lang);
   return (
-    <View className={`flex-row gap-3 ${className}`}>
-      <View className="mt-1 w-1 self-stretch rounded-full bg-primary/75" />
+    <View className={`flex-row items-start gap-3 ${className}`}>
+      <View className="mt-[5px] w-[3px] self-stretch rounded-full bg-ink/25" />
       <View className="min-w-0 flex-1">
         {overline ? (
           <Text
             style={{ fontFamily: f.medium }}
-            className="text-[11px] uppercase tracking-[0.14em] text-primary"
+            className="text-[11px] uppercase tracking-[0.12em] text-ink-muted"
             numberOfLines={1}
           >
             {overline}
@@ -33,13 +37,14 @@ export function SectionHeading({
         ) : null}
         <Text
           style={{ fontFamily: f.bold }}
-          className={`text-lg leading-6 text-ink ${overline ? 'mt-1' : ''}`}
+          className={`text-[17px] leading-[22px] tracking-[-0.2px] text-ink ${overline ? 'mt-1' : ''}`}
           numberOfLines={3}
           accessibilityRole="header"
         >
           {title}
         </Text>
       </View>
+      {right != null ? <View className="mt-[3px] flex-shrink-0">{right}</View> : null}
     </View>
   );
 }

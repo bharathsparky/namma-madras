@@ -50,3 +50,6 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Nested repo (landing site clone); use submodule if it should ship with the app repo
+namma-madras-landing/

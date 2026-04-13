@@ -10,7 +10,22 @@ import { BannerGradientNoise } from '@/components/BannerGradientNoise';
 import { HeroIllustrationBand } from '@/components/HeroIllustrationBand';
 import { useFontFamily } from '@/hooks/useFontFamily';
 
-const DEFAULT_HERO_ILLUSTRATION = require('../assets/images/food-hero-illustration.png');
+const DEFAULT_HERO_ILLUSTRATION = require('../assets/images/food-hero-illustration.webp');
+
+/** Top-right icon: search on home, or category grid on hubs / emergency. */
+export type HomeHeroQuickAction =
+  | {
+      mode: 'search';
+      onPress: () => void;
+      accessibilityLabel: string;
+      accessibilityHint: string;
+    }
+  | {
+      mode: 'categories';
+      onPress: () => void;
+      accessibilityLabel: string;
+      accessibilityHint: string;
+    };
 
 type Props = {
   lang: Lang;
@@ -19,9 +34,8 @@ type Props = {
   timeAccessibilityLabel: string;
   /** Optional — omitted when empty (e.g. home uses brand title + subtitle only). */
   tagline?: string;
-  onCategoriesPress: () => void;
-  categoriesA11yLabel: string;
-  categoriesA11yHint: string;
+  /** Search / category grid. Omit when the screen provides those elsewhere (e.g. home body search + grid). */
+  quickAction?: HomeHeroQuickAction;
   onSettings: () => void;
   settingsLabel: string;
   /** Saved places — primary entry; omit to hide the bookmark control. */
@@ -47,9 +61,7 @@ export function HomeSuperAppHero({
   timeLine,
   timeAccessibilityLabel,
   tagline,
-  onCategoriesPress,
-  categoriesA11yLabel,
-  categoriesA11yHint,
+  quickAction,
   onSettings,
   settingsLabel,
   onSavedPress,
@@ -61,7 +73,7 @@ export function HomeSuperAppHero({
   onBackPress,
   backA11yLabel,
 }: Props) {
-  const theme = themeProp ?? homeHero;
+  const theme: SuperAppHeroTheme = themeProp ?? homeHero;
   const illustration = illustrationSource ?? DEFAULT_HERO_ILLUSTRATION;
   const insets = useSafeAreaInsets();
   const f = useFontFamily(lang);
@@ -71,7 +83,7 @@ export function HomeSuperAppHero({
   const panelContentPaddingTop = showPanelTopSeparator ? 22 : 18;
 
   return (
-    <View className="overflow-hidden bg-surface-dark">
+    <View className="overflow-hidden bg-transparent">
       <LinearGradient
         colors={[theme.textPanelDeep, theme.textPanel]}
         start={{ x: 0.5, y: 0 }}
@@ -129,7 +141,7 @@ export function HomeSuperAppHero({
             pointerEvents="none"
           />
           {/* Mesh + grain on top of base panel so tint stays visible */}
-          <BannerGradientNoise variant="dark" />
+          <BannerGradientNoise variant={theme.bannerNoiseVariant ?? 'dark'} />
           {showPanelTopSeparator ? (
             <LinearGradient
               colors={[...theme.panelTopShade]}
@@ -182,24 +194,30 @@ export function HomeSuperAppHero({
               </View>
 
               <View className="flex-row items-start gap-4">
-                <Pressable
-                  onPress={onCategoriesPress}
-                  hitSlop={HIT_SLOP_COMFORT}
-                  accessibilityRole="button"
-                  accessibilityLabel={categoriesA11yLabel}
-                  accessibilityHint={categoriesA11yHint}
-                  android_ripple={{ color: ui.heroRippleLight, borderless: true, radius: 28 }}
-                  style={({ pressed }) => ({
-                    minHeight: 48,
-                    minWidth: 48,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: 24,
-                    backgroundColor: pressed ? theme.iconPressBg : 'transparent',
-                  })}
-                >
-                  <Ionicons name="grid-outline" size={24} color={colors.onPrimary} />
-                </Pressable>
+                {quickAction ? (
+                  <Pressable
+                    onPress={quickAction.onPress}
+                    hitSlop={HIT_SLOP_COMFORT}
+                    accessibilityRole="button"
+                    accessibilityLabel={quickAction.accessibilityLabel}
+                    accessibilityHint={quickAction.accessibilityHint}
+                    android_ripple={{ color: ui.heroRippleLight, borderless: true, radius: 28 }}
+                    style={({ pressed }) => ({
+                      minHeight: 48,
+                      minWidth: 48,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 24,
+                      backgroundColor: pressed ? theme.iconPressBg : 'transparent',
+                    })}
+                  >
+                    <Ionicons
+                      name={quickAction.mode === 'search' ? 'search-outline' : 'grid-outline'}
+                      size={24}
+                      color={colors.onPrimary}
+                    />
+                  </Pressable>
+                ) : null}
                 {onSavedPress && savedA11yLabel ? (
                   <Pressable
                     onPress={onSavedPress}
@@ -243,7 +261,7 @@ export function HomeSuperAppHero({
             {tagline?.trim() ? (
               <Text
                 style={{ fontFamily: f.medium, color: ui.heroTagline }}
-                className="mt-2 text-[15px] leading-[23px]"
+                className="mt-[18px] text-[15px] leading-[23px]"
                 numberOfLines={6}
                 ellipsizeMode="tail"
               >

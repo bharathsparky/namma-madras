@@ -1,6 +1,6 @@
 import type { Lang } from '@/db/types';
 
-/** Tamil: Mukta Malar. English: Manrope (Asphalt specifies Maison Neue; Manrope is the bundled stand-in). */
+/** Tamil: Mukta Malar. English: Proxima Nova (local assets). Hindi: Manrope (Latin; Devanagari falls back to system). */
 export function useFontFamily(lang: Lang): {
   regular: string;
   medium: string;
@@ -13,7 +13,13 @@ export function useFontFamily(lang: Lang): {
       bold: 'MuktaMalar_700Bold',
     };
   }
-  /** English + Hindi: Manrope covers basic Latin; Devanagari falls back to system glyphs. */
+  if (lang === 'en') {
+    return {
+      regular: 'ProximaNova_400Regular',
+      medium: 'ProximaNova_600SemiBold',
+      bold: 'ProximaNova_700Bold',
+    };
+  }
   return {
     regular: 'Manrope_400Regular',
     medium: 'Manrope_600SemiBold',

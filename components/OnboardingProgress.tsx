@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors, ui } from '@/constants/theme';
+import { onboarding, ui } from '@/constants/theme';
 
 const TOTAL = 3;
 
@@ -28,7 +28,7 @@ export function OnboardingProgress({ step, total = TOTAL }: { step: number; tota
             style={{
               width: isCurrent ? 28 : 8,
               backgroundColor:
-                isDone || isCurrent ? colors.primary : ui.onboardingTrack,
+                isDone || isCurrent ? onboarding.teal : ui.onboardingTrack,
               opacity: isCurrent ? 1 : isDone ? 0.55 : 1,
             }}
           />
