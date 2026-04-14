@@ -2,7 +2,7 @@
   "expo": {
     "name": "Namma Madras",
     "slug": "namma-madras",
-    "version": "1.0.2",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "namma-madras",
@@ -18,7 +18,7 @@
     },
     "android": {
       "package": "com.nammamadras.app",
-      "versionCode": 3,
+      "versionCode": 5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#E5EEEA"

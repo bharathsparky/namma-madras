@@ -22,7 +22,7 @@
     "freqPeriodic": "Periodic",
     "onCall": "On call",
     "seeTimings": "See timings",
-    "verified": "Verified",
+    "verified": "Listed",
     "callBeforeVisit": "A quick call before you go helps confirm they can still welcome you — details sometimes change.",
     "ngoTimingNote": "Hours can shift on festival days and Sundays — worth a gentle check.",
     "noResults": "We haven’t found a match nearby yet. Try another search or browse categories — we’re glad you’re here.",
@@ -76,12 +76,13 @@
     "brandHeader": "நம்ம மெட்ராஸ்",
     "brandSub": "வந்தாரை வாழவைக்கும் சென்னை",
     "brandSubEn": "Namma Madras — Chennai welcomes all who come",
-    "introTa": "உணவு, தங்குமிடம், மருத்துவம், வேலை, கற்றல் — அனைத்தும் இலவசமாக",
-    "introEn": "Food, shelter, medical, work, learning — all free, all in one place",
-    "introHi": "खाना, आश्रय, चिकित्सा, काम, शिक्षा — सब मुफ्त, एक जगह",
-    "welcomeKicker": "Welcome",
-    "welcomeTitle": "Help in Chennai, when you need it",
-    "welcomeBody": "Find free and low-cost food, shelter, health, work, and learning places. Works offline after you open the app once.",
+    "introTa": "உணவு, தங்குமிடம், மருத்துவம், வேலை, கற்றல் — பல இலவச மற்றும் குறைந்த செலவு விவரங்கள் ஒரே இடத்தில்",
+    "introEn": "Food, shelter, medical, work, learning — free and low-cost options in one place",
+    "introHi": "खाना, आश्रय, चिकित्सा, काम, शिक्षा — मुफ़्त और कम लागत विकल्प एक ही जगह",
+    "disclaimerShort": "Not a government app. Always confirm hours and rules with each place.",
+    "welcomeKicker": "வரவேற்பு",
+    "welcomeTitle": "சென்னையில் உதவி — தேவைப்படும்போது",
+    "welcomeBody": "இலவச மற்றும் குறைந்த செலவு உணவு, தங்குமிடம், உடல்நலம், வேலை, கற்றல் இடங்கள். செயலியை ஒருமுறை திறந்த பின் ஆஃப்லைனிலும் வேலை செய்யும்.",
     "langSimpleHeadline": "Help us know your preferred language",
     "langContinue": "Continue",
     "chooseLang": "Choose your language",
@@ -115,7 +116,7 @@
     "locBody": "If you’re comfortable sharing location, we can list nearer places first. It stays on your device — we only use it for distance, never uploaded.",
     "locAllow": "Allow location",
     "continueToApp": "Enter app",
-    "notifBody": "Optional: we can let you know when new verified places are added. Needs internet — only if you’d like.",
+    "notifBody": "Optional: we can let you know when new listings are added. Needs internet — only if you’d like.",
     "notifAllow": "Allow notifications"
   },
   "tabs": {
@@ -131,7 +132,7 @@
     "heroOverline": "Namma Madras — help near you",
     "heroTitle": "Food, shelter, health & more",
     "heroImageA11y": "Chennai skyline illustration",
-    "promoFallback": "Verified places",
+    "promoFallback": "Places in this app",
     "promoTags": {
       "food": "Free & low-cost meals",
       "stay": "Shelters & night stays",
@@ -154,7 +155,7 @@
   },
   "home": {
     "greeting": "Namma Madras",
-    "sub": "Free and low-cost help around you — works offline, made with care.",
+    "sub": "Independent guide to free and low-cost help near you — not a government app. Works offline after first open.",
     "heroGreeting": {
       "morning": "Good morning",
       "midday": "Good afternoon",
@@ -300,7 +301,7 @@
       "listOverline": "Places",
       "listTitle": "Clinics & hospitals",
       "sosTitle": "Emergency & helplines",
-      "sosSubtitle": "Numbers are big on purpose — tap to call. Works offline after this screen loads.",
+      "sosSubtitle": "Numbers are big on purpose — tap to open your phone’s dialer. Works offline after this screen loads.",
       "sosTapHint": "Calls this number",
       "sosA11y": "Emergency numbers and helplines. Tap a number to call.",
       "filterBarA11y": "Filter healthcare places by type. Scroll sideways for more filters.",
@@ -432,7 +433,7 @@
     "capacity": "Capacity",
     "documents": "Documents",
     "gender": "Access",
-    "verifiedBy": "Verified by {{org}} on {{date}}",
+    "verifiedBy": "Listing note from {{org}} ({{date}}). Confirm with the venue before you travel.",
     "contactConfirm": "Call to double-check"
   },
   "emergency": {
@@ -445,6 +446,7 @@
     "sectionLanguageDisplay": "Language & display",
     "sectionEmergency": "Emergency",
     "sectionDevice": "Device & location",
+    "sectionTrustLegal": "Trust & official sources",
     "sectionAbout": "About",
     "tamilNumeralsSub": "Use Tamil numerals for distances and times when the app is in Tamil.",
     "linkEmergencySub": "Police, ambulance, and helplines — works offline",
@@ -456,8 +458,35 @@
     "privacyDismiss": "OK",
     "aboutLine": "Namma Madras · v{{v}}"
   },
+  "dataSources": {
+    "title": "Official sources & disclaimer",
+    "rowHint": "Not a government app — tap for disclaimer and official website links",
+    "disclaimerHeading": "Independent app — not published by the government",
+    "disclaimerP1": "Namma Madras is a third-party information app. It is not affiliated with, endorsed by, or published by the Government of Tamil Nadu, Greater Chennai Corporation, or any government body.",
+    "disclaimerP2": "Information about government schemes, hospitals, civic services, and helplines is compiled from publicly available official and open sources to help you find help in Chennai. Details may be incomplete, change without notice, or contain errors.",
+    "disclaimerP3": "Before you travel or rely on a service, confirm timings, eligibility, fees, and availability with the hospital, office, or official channel.",
+    "sourcesHeading": "Official websites (tap to open)",
+    "linkGcc": "Greater Chennai Corporation",
+    "linkTnGov": "Government of Tamil Nadu",
+    "linkNhmTn": "National Health Mission — Tamil Nadu",
+    "linkEsic": "Employees’ State Insurance Corporation (ESIC)",
+    "linkCmchis": "Tamil Nadu Chief Minister’s Comprehensive Health Insurance Scheme (CMCHIS)",
+    "linkLabourTn": "Labour Department — Tamil Nadu",
+    "footerNote": "If an official URL changes, use a search engine or the department’s latest notice. This app does not replace government websites or staff."
+  },
   "saved": {
     "title": "Saved places",
     "empty": "Nothing saved yet. When a place feels right, tap the heart — we’ll keep it here for you."
+  },
+  "trustNotice": {
+    "a11yLabel": "Notice before you continue",
+    "title": "Independent app",
+    "disclosureLabel": "What this means",
+    "body": "Not run by the government. Details come from public sources and may be incomplete — confirm with each place.",
+    "agreementCaption": "To continue, confirm:",
+    "agreeLabel": "I have read and agree to the notice above.",
+    "continueCta": "Continue",
+    "ctaHint": "Select the agreement above to enable Continue",
+    "footerNote": "Full disclaimer and official links: Settings → Trust & official sources."
   }
 }

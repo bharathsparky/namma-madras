@@ -195,6 +195,17 @@ export default function SettingsScreen() {
           />
         </View>
 
+        <SettingsSectionLabel f={f}>{t('settings.sectionTrustLegal')}</SettingsSectionLabel>
+        <View className="gap-2">
+          <SettingsNavRow
+            icon="shield-checkmark-outline"
+            label={t('dataSources.title')}
+            hint={t('dataSources.rowHint')}
+            onPress={() => router.push('/data-sources' as never)}
+            f={f}
+          />
+        </View>
+
         <SettingsSectionLabel f={f}>{t('settings.sectionAbout')}</SettingsSectionLabel>
         <View className="gap-3">
           <Pressable

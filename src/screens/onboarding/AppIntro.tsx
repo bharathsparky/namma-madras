@@ -17,19 +17,26 @@ import { OnboardingShell } from '@/components/OnboardingShell';
 import { warmShadowKey } from '@/constants/asphalt';
 import { colors, onboarding, ui } from '@/constants/theme';
 import { useFontFamily } from '@/hooks/useFontFamily';
+import type { Lang } from '@/db/types';
 
 const TEAL = onboarding.teal;
 
 const LOGO = require('../../../assets/images/icon.png');
 
 /**
- * Onboarding step 1 — what Namma Madras is (before language).
- * Default copy is English until the user picks a language next; Tamil name line is decorative.
+ * Onboarding step 1 — Tamil-first hero (before language pick). English app name / welcome removed;
+ * copy uses Tamil keys even when the app default locale is English.
  */
 export default function AppIntro() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const en = useFontFamily('en');
   const ta = useFontFamily('ta');
+  const disclaimerLang: Lang = i18n.language?.startsWith('ta')
+    ? 'ta'
+    : i18n.language?.startsWith('hi')
+      ? 'hi'
+      : 'en';
+  const disclaimerFont = useFontFamily(disclaimerLang);
 
   const goLanguage = () => router.push('/onboard/language' as never);
 
@@ -89,27 +96,36 @@ export default function AppIntro() {
             </View>
           </View>
 
-          <Text style={[styles.kicker, { fontFamily: en.medium }]}>{t('onboarding.welcomeKicker')}</Text>
-          <Text style={[styles.brandName, { fontFamily: en.bold }]}>{t('appName')}</Text>
-          <Text style={[styles.brandTamil, { fontFamily: ta.medium }]} accessibilityElementsHidden>
+          <Text style={[styles.kicker, { fontFamily: ta.medium }]}>{t('onboarding.welcomeKicker')}</Text>
+          <Text
+            style={[styles.brandTitle, { fontFamily: ta.bold }]}
+            accessibilityRole="header"
+          >
             {t('onboarding.brandHeader')}
           </Text>
           <Text style={[styles.tagline, { fontFamily: ta.regular }]}>{t('onboarding.brandSub')}</Text>
+
+          <Text
+            style={[styles.disclaimerShort, { fontFamily: disclaimerFont.regular }]}
+            accessibilityRole="text"
+          >
+            {t('onboarding.disclaimerShort')}
+          </Text>
 
           <View style={styles.divider} importantForAccessibility="no" accessibilityElementsHidden />
 
           <View style={styles.valueCard}>
             <View style={styles.valueCardAccent} importantForAccessibility="no" accessibilityElementsHidden />
-            <Text style={[styles.headline, { fontFamily: en.bold }]} accessibilityRole="header">
+            <Text style={[styles.headline, { fontFamily: ta.bold }]} accessibilityRole="header">
               {t('onboarding.welcomeTitle')}
             </Text>
-            <Text style={[styles.body, { fontFamily: en.regular }]}>{t('onboarding.welcomeBody')}</Text>
+            <Text style={[styles.body, { fontFamily: ta.regular }]}>{t('onboarding.welcomeBody')}</Text>
 
             <View style={styles.highlightRow}>
               <View style={styles.highlightIcon} accessibilityElementsHidden importantForAccessibility="no">
                 <Ionicons name="sparkles" size={18} color={TEAL} />
               </View>
-              <Text style={[styles.highlightText, { fontFamily: en.medium }]}>{t('onboarding.introEn')}</Text>
+              <Text style={[styles.highlightText, { fontFamily: ta.medium }]}>{t('onboarding.introTa')}</Text>
             </View>
           </View>
         </MotiView>
@@ -163,24 +179,17 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   kicker: {
-    fontSize: 12,
-    letterSpacing: 1.35,
-    textTransform: 'uppercase',
+    fontSize: 13,
+    letterSpacing: 0.3,
     color: colors.inkMuted,
-    marginBottom: 10,
+    marginBottom: 8,
     textAlign: 'center',
   },
-  brandName: {
-    fontSize: 30,
+  brandTitle: {
+    marginTop: 4,
+    fontSize: 28,
     lineHeight: 36,
-    letterSpacing: -0.6,
-    color: colors.ink,
-    textAlign: 'center',
-  },
-  brandTamil: {
-    marginTop: 6,
-    fontSize: 17,
-    lineHeight: 24,
+    letterSpacing: -0.2,
     color: ui.brandTealMuted,
     textAlign: 'center',
   },
@@ -191,6 +200,15 @@ const styles = StyleSheet.create({
     color: colors.inkMuted,
     textAlign: 'center',
     paddingHorizontal: 8,
+  },
+  disclaimerShort: {
+    marginTop: 14,
+    fontSize: 13,
+    lineHeight: 19,
+    color: colors.inkMuted,
+    textAlign: 'center',
+    paddingHorizontal: 12,
+    opacity: 0.92,
   },
   divider: {
     alignSelf: 'center',

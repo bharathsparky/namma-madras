@@ -145,6 +145,7 @@ function RootNav() {
         <Stack.Screen name="category/[slug]" />
         <Stack.Screen name="saved" />
         <Stack.Screen name="settings" options={{ presentation: 'modal', animation: 'none' }} />
+        <Stack.Screen name="data-sources" options={{ presentation: 'modal', animation: 'none' }} />
         <Stack.Screen name="search" />
       </Stack>
     </View>

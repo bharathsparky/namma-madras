@@ -362,19 +362,20 @@ function FoodPlaceCardInner({
               >
                 {locationText}
               </Text>
-              {canNavigate ? (
-                <Pressable
-                  onPress={onDirections}
-                  hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('a11y.directionsToPlace', { place: name })}
-                  className="h-11 min-w-[44px] flex-shrink-0 flex-row items-center justify-center rounded-xl border border-ink/[0.09] bg-surface-inset/90 active:bg-ink/[0.06] active:opacity-95"
-                >
-                  <Ionicons name="navigate-outline" size={17} color={colors.inkMuted} />
-                </Pressable>
-              ) : null}
             </View>
           </View>
+
+          {canNavigate ? (
+            <Pressable
+              onPress={onDirections}
+              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+              accessibilityRole="button"
+              accessibilityLabel={t('a11y.directionsToPlace', { place: name })}
+              className="h-11 min-w-[44px] flex-shrink-0 flex-row items-center justify-center rounded-xl border border-ink/[0.09] bg-surface-inset/90 active:bg-ink/[0.06] active:opacity-95"
+            >
+              <Ionicons name="navigate-outline" size={17} color={colors.inkMuted} />
+            </Pressable>
+          ) : null}
         </Pressable>
       </View>
       {cardDeemphasized ? <PlaceDeemphasisOverlay /> : null}

@@ -11,11 +11,13 @@ import {
   HomeMarketplaceSearchPanel,
   useMarketplaceChromeLayout,
 } from '@/components/HomeMarketplaceChrome';
+import { IndependentAppTrustModal } from '@/components/IndependentAppTrustModal';
 import { ReceptionHallHintBanner } from '@/components/ReceptionHallHintBanner';
 import { marketplaceStatusBarTint } from '@/constants/asphalt';
 import { getCategories } from '@/db/queries';
 import { useHomeCategorySwipePan } from '@/hooks/useHomeCategorySwipePan';
 import { useReceptionHallHint } from '@/hooks/useReceptionHallHint';
+import { useIndependentAppTrustNotice } from '@/hooks/useIndependentAppTrustNotice';
 import { useLanguageStore } from '@/stores/languageStore';
 
 /** Bottom scroll padding (no tab bar; no floating SOS on this screen). */
@@ -36,6 +38,8 @@ export default function HomeScreen() {
   const hubSwipePanHandlers = useHomeCategorySwipePan(categorySlugs, activeSlug, onSelectCategory);
 
   const { hint: receptionHint, dismiss: dismissReceptionHint } = useReceptionHallHint();
+  const { visible: trustNoticeVisible, acknowledge: acknowledgeTrustNotice } =
+    useIndependentAppTrustNotice();
 
   const marketplaceLayout = useMarketplaceChromeLayout();
 
@@ -88,6 +92,11 @@ export default function HomeScreen() {
           />
         </View>
       </ScrollView>
+      <IndependentAppTrustModal
+        visible={trustNoticeVisible}
+        onAcknowledge={acknowledgeTrustNotice}
+        lang={lang}
+      />
     </SafeAreaView>
   );
 }

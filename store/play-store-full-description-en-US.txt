@@ -1,0 +1,19 @@
+Namma Madras — help finding food, shelter, health, work, and learning resources in Chennai (English / Tamil / Hindi in-app).
+
+IMPORTANT
+• This is an independent community information app. It is NOT published by, affiliated with, or endorsed by the Government of Tamil Nadu, Greater Chennai Corporation (GCC), or any government body.
+• Information is compiled from publicly available sources to help you discover options. Details can change, be incomplete, or contain errors. Always confirm timings, eligibility, fees, and availability with the venue, hospital, or official channel before you travel or rely on a service.
+• Emergency numbers open your phone’s dialer when you tap them — the app does not connect the call on your behalf.
+
+WHAT YOU CAN EXPLORE (examples; availability varies by place and time)
+• Food: temples, community kitchens, NGOs, and subsidised meal options where we have listings.
+• Stay: night shelters, hospital-related stay options, and other listed places — rules and who can stay differ by location.
+• Medical: hospitals, schemes, and helplines — check eligibility and official portals for the latest rules.
+• Work: labour stands and pointers to registration and welfare schemes — verify with official sites and ward offices.
+• Learning: libraries, study spaces, and training pointers — confirm with each institution.
+• Hygiene: toilets, bathing, clothes, and related listings where available in the app.
+• Emergency: standard public helpline numbers (e.g. ambulance, police) as listed in the app.
+
+Official website links and the full disclaimer are available inside the app under Settings → Trust & official sources.
+
+Built with care in Chennai by Sparky Labs.
